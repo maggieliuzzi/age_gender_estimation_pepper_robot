@@ -1,0 +1,10 @@
+# IDE
+.idea/
+
+# Environment
+venv/
+
+# Dataset
+dataset/
+wiki_crop/
+wiki_crop.tar
