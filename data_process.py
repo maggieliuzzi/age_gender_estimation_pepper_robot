@@ -55,19 +55,6 @@ mat_data = [{"dob": mat[0][0][i],
 print("Loaded data from " + mat_path)
 
 '''
-for i in range(0, len(mat_data)):
-    dob = mat_data[i]["dob"]
-    birth = datetime.fromordinal(max(int(dob) - 366, 1)).year
-    age = mat_data[i]["date"] - birth
-    print(age)
-    if age <= 0:
-        print(str(birth) + " " + str(mat_data[i]["date"]))
-        print(mat_data[i]["filepath"])
-
-exit(0)
-'''
-
-'''
 Find all of the images with: only one face, a good score, a defined gender and a filepath
 '''
 for i in range(0, len(mat_data)):
@@ -77,31 +64,14 @@ for i in range(0, len(mat_data)):
     if not (mat_data[i]["filepath"] and (mat_data[i]["gender"] == 0 or mat_data[i]["gender"] == 1)):
         mat_data[i]["usable"] = False
     if mat_data[i]["usable"]:
-        ''' dob = mat_data[i]["dob"]
-        birth = datetime.fromordinal(max(int(dob) - 366, 1)).year
-        date = mat_data[i]["date"]
-        age = date - birth '''
         if mat_data[i]["age"] <= 0 or mat_data[i]["age"] >= 116:
             mat_data[i]["usable"] = False
-        ''' if age <= 10 and age >= 0:
-            print(age)
-            print(mat_data[i]["filepath"]) '''
 
 '''
 Remove any unusable data and split remainder into training, validation and testing
 '''
 mat_data_good = [image for image in mat_data if image["usable"]]
-
 good_images = len(mat_data_good)
-
-'''
-for i in range(0,good_images):
-    print(" ")
-    print(dob)
-    print(" ")
-exit(0)
-'''
-
 train_cutoff = 0.64
 validate_cutoff = 0.8
 train_images = int(math.floor(good_images * train_cutoff))
