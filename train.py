@@ -45,10 +45,11 @@ np.random.seed(3)
 '''
 Define useful filepaths for later
 '''
-home_path = os.path.dirname(__file__)
-train_path = os.path.join(home_path, "dataset/train")
-validate_path = os.path.join(home_path, "dataset/validate")
-test_path = os.path.join(home_path, "dataset/test")
+# home_path = os.path.dirname(__file__)
+home_path = "/Users/maggieliuzzi/agerecognition/"
+train_path = os.path.join(home_path, "dataset_adience/train")
+validate_path = os.path.join(home_path, "dataset_adience/validate")
+test_path = os.path.join(home_path, "dataset_adience/test")
 
 '''
 Downloads MobileNetV2 without its classifier and freezes all but the last 4 layers
@@ -85,6 +86,9 @@ Train the neural network!
 model_new.compile(optimizer='rmsprop',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
-model_new.fit_generator(train_generator, epochs=1, steps_per_epoch=len(train_generator), verbose=1,
+print(train_generator)
+print(validate_generator)
+
+model_new.fit_generator(train_generator, epochs=3, steps_per_epoch=len(train_generator), verbose=1,
                         validation_data=validate_generator, validation_steps=len(validate_generator))
 model_new.save('final_model.h5')
