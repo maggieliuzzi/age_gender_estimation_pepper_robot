@@ -37,7 +37,7 @@ zip_path = "/Users/maggieliuzzi/NeuralNetworks/adience.zip"
 source_path = '/Users/maggieliuzzi/NeuralNetworks/Adience/'
 
 
-dataset_path = os.path.join(home_path, "dataset_adience")
+dataset_path = os.path.join(home_path, "dataset_adience_gender")
 train_path = os.path.join(dataset_path, "train")
 validate_path = os.path.join(dataset_path, "validate")
 train_path_0 = os.path.join(train_path, "f")
@@ -95,7 +95,7 @@ with open(csv_path) as csvfile:
 
     current_point = 0
     end_point = len(usable_gender)
-    file = open("dataset_adience/labels.csv", "w")  # Instead of .txt
+    file = open("dataset_adience_gender/labels.csv", "w")  # Instead of .txt
 
     for i in range(0,train_images):
         print(i)        # if count <= train_images:
@@ -112,7 +112,7 @@ with open(csv_path) as csvfile:
         print(filepath)
         source = os.path.join(source_path, filepath)
         print(source)
-        destination = os.path.join(home_path, "dataset_adience", "train", gender)
+        destination = os.path.join(home_path, "dataset_adience_gender", "train", gender)
         print(destination)
         shutil.copy(source, destination)
         file.write(str(usable_gender[i]) + '\n')
@@ -133,7 +133,7 @@ with open(csv_path) as csvfile:
         print(filepath)
         source = os.path.join(source_path, filepath)
         print(source)
-        destination = os.path.join(home_path, "dataset_adience", "validate", gender)
+        destination = os.path.join(home_path, "dataset_adience_gender", "validate", gender)
         print(destination)
         shutil.copy(source, destination)
         file.write(str(usable_gender[i]) + '\n')
@@ -153,7 +153,7 @@ with open(csv_path) as csvfile:
         print(filepath)
         source = os.path.join(source_path, filepath)
         print(source)
-        destination = os.path.join(home_path, "dataset_adience", "test", "test")
+        destination = os.path.join(home_path, "dataset_adience_gender", "test", "test")
         print(destination)
         shutil.copy(source, destination)
         file.write(str(usable_gender[i]) + '\n')

@@ -47,9 +47,9 @@ Define useful filepaths for later
 '''
 # home_path = os.path.dirname(__file__)
 home_path = "/Users/maggieliuzzi/agerecognition/"
-train_path = os.path.join(home_path, "dataset_adience_age/train")
-validate_path = os.path.join(home_path, "dataset_adience_age/validate")
-test_path = os.path.join(home_path, "dataset_adience_age/test")
+train_path = os.path.join(home_path, "dataset_adience_age_15y/train")
+validate_path = os.path.join(home_path, "dataset_adience_age_15y/validate")
+test_path = os.path.join(home_path, "dataset_adience_age_15y/test")
 
 '''
 Downloads MobileNetV2 without its classifier and freezes all but the last 4 layers
@@ -62,7 +62,7 @@ for layer in model_mobile.layers[:-4]:
 
 model_new = models.Sequential()
 model_new.add(model_mobile)
-model_new.add(layers.Dense(12, activation='softmax'))
+model_new.add(layers.Dense(4, activation='softmax'))
 # model_new.add(layers.LeakyReLU(alpha=0.25))
 model_new.summary()
 
@@ -89,4 +89,4 @@ print(validate_generator)
 
 model_new.fit_generator(train_generator, epochs=3, steps_per_epoch=len(train_generator), verbose=1,
                         validation_data=validate_generator, validation_steps=len(validate_generator))
-model_new.save('final_model.h5')
+model_new.save('final_model_adience_age_15y.h5')

@@ -2,7 +2,7 @@ import csv
 # import re
 import math
 
-with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open("/Users/maggieliuzzi/NeuralNetworks/Adience/age_data.csv",'w') as newf:
+with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open("/Users/maggieliuzzi/NeuralNetworks/Adience/age_5y_data.csv",'w') as newf:
     reader = csv.reader(f)
     writer = csv.writer(newf)
 
