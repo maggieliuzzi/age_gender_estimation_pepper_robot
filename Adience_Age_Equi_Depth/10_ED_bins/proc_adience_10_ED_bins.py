@@ -100,6 +100,7 @@ with open(csv_path) as csvfile:
             print("Directory already exists: " + path)
 
     good_images = len(usable_age)  # number
+
     # problematic - fix!
     train_cutoff = 0.64
     validate_cutoff = 0.8
@@ -113,24 +114,26 @@ with open(csv_path) as csvfile:
 
     current_point = 0
     end_point = len(usable_age)
-    file = open("Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/labels.csv", "w")  # Instead of .txt
+    file = open(dataset_path+"/labels.csv", "w")  # Instead of .txt
 
     for i in range(0, train_images):
         print(i)  # if count <= train_images:
         train_images_data.append(usable_age[i])
         role = "train"
-        print(role)
+        # print(role)
         image_folder = usable_age[i][0]
         original_image = usable_age[i][1]
         face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = usable_age[i][3]
+        bin = usable_age[i][13]
         print(age)
+        print(bin)
         filepath = 'faces/' + image_folder + '/' + image_name
-        print(filepath)
+        # print(filepath)
         source = os.path.join(source_path, filepath)
-        print(source)
-        destination = os.path.join(home_path, "dataset_adience_age_10_ED_bins", "train", age)
+        # print(source)
+        destination = os.path.join(home_path, "dataset_adience_age_10_ED_bins", "train", bin)
         print(destination)
         shutil.copy(source, destination)
         file.write(str(usable_age[i]) + '\n')
@@ -140,18 +143,20 @@ with open(csv_path) as csvfile:
         # elif count <= (train_images + validate_images):
         validate_images_data.append(usable_age[i])
         role = "validate"
-        print(role)
+        # print(role)
         image_folder = usable_age[i][0]
         original_image = usable_age[i][1]
         face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = usable_age[i][3]
         print(age)
+        bin = usable_age[i][13]
+        print(bin)
         filepath = 'faces/' + image_folder + '/' + image_name
-        print(filepath)
+        # print(filepath)
         source = os.path.join(source_path, filepath)
-        print(source)
-        destination = os.path.join(home_path, "dataset_adience_age_10_ED_bins", "validate", age)
+        # print(source)
+        destination = os.path.join(home_path, "dataset_adience_age_10_ED_bins", "validate", bin)
         print(destination)
         shutil.copy(source, destination)
         file.write(str(usable_age[i]) + '\n')
@@ -160,17 +165,19 @@ with open(csv_path) as csvfile:
     for i in range(train_images + validate_images, good_images):
         test_images_data.append(usable_age[i])
         role = "test"
-        print(role)
+        # print(role)
         image_folder = usable_age[i][0]
         original_image = usable_age[i][1]
         face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = usable_age[i][3]
         print(age)
+        bin = usable_age[i][13]
+        print(bin)
         filepath = 'faces/' + image_folder + '/' + image_name
-        print(filepath)
+        # print(filepath)
         source = os.path.join(source_path, filepath)
-        print(source)
+        # print(source)
         destination = os.path.join(home_path, "dataset_adience_age_10_ED_bins", "test", "test")
         print(destination)
         shutil.copy(source, destination)

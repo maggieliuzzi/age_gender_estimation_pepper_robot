@@ -21,9 +21,9 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
             age = math.floor(sum(age) / 2)
         age = int(age)
 
-
-        newline[3] = age
-        print(newline)
+        if age > 0 and age is not None:
+            newline[3] = age
+            print(newline)
 
         if newline[3] not in ages:
             ages.append(newline[3])
@@ -36,3 +36,4 @@ f.close()
 newf.close()
 
 print("End of file.")
+# I then removed the age: -60100 and None rows manually and overwrote file

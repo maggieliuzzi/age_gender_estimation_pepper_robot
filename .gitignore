@@ -13,6 +13,11 @@ dataset/
 wiki_crop/
 wiki_crop.tar
 Adience/
+dataset_adience_age_10_ED_bins/
+dataset_adience_age_10y/
+dataset_adience_age_15y/
+dataset_adience_age_5y/
+dataset_adience_gender/
 
 # Models.h5
 Comparable_Models/
@@ -20,3 +25,6 @@ Comparable_Models/
 # Models
 *.hdf5
 *.h5
+
+# Node Modules
+node_modules/
