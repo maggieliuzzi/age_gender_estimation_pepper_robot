@@ -34,6 +34,7 @@ six~=1.11.0
 tensorboard~=1.8.0
 tensorflow~=1.8.0
 termcolor~=1.1.0
+theano~=1.0.3
 urllib3~=1.23
 webencodings~=0.5.1
 Werkzeug~=0.14.1

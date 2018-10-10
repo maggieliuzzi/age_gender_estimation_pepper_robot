@@ -52,5 +52,3 @@ Alternatively, you can follow installation up to the end of Step 2 and then use 
 Currently:
 
 * **train.py** imports a model for training
-
-* **mat.py** converts IMDB-WIKI's .mat file containing the data labels into an easier-to-read .csv
