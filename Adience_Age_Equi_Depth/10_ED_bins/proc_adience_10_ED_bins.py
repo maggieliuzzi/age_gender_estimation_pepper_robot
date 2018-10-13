@@ -85,7 +85,7 @@ with open(csv_path) as csvfile:
             usable_age.append(row)
         gender = row[4]
         if gender is not None:
-            print(row)
+            # print(row)
             usable_gender.append(row)
         role = None
         total_images += 1
@@ -122,13 +122,14 @@ with open(csv_path) as csvfile:
         role = "train"
         # print(role)
         image_folder = usable_age[i][0]
+        # print(image_folder)
         original_image = usable_age[i][1]
         face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = usable_age[i][3]
         bin = usable_age[i][13]
-        print(age)
-        print(bin)
+        # print(age)
+        # print(bin)
         filepath = 'faces/' + image_folder + '/' + image_name
         # print(filepath)
         source = os.path.join(source_path, filepath)
@@ -138,7 +139,7 @@ with open(csv_path) as csvfile:
         shutil.copy(source, destination)
         file.write(str(usable_age[i]) + '\n')
         current_point += 1
-        print(current_point)  # bar.show(current_point)
+        # print(current_point)  # bar.show(current_point)
     for i in range(train_images, train_images + validate_images):
         # elif count <= (train_images + validate_images):
         validate_images_data.append(usable_age[i])
@@ -149,9 +150,9 @@ with open(csv_path) as csvfile:
         face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = usable_age[i][3]
-        print(age)
+        # print(age)
         bin = usable_age[i][13]
-        print(bin)
+        # print(bin)
         filepath = 'faces/' + image_folder + '/' + image_name
         # print(filepath)
         source = os.path.join(source_path, filepath)
@@ -161,7 +162,7 @@ with open(csv_path) as csvfile:
         shutil.copy(source, destination)
         file.write(str(usable_age[i]) + '\n')
         current_point += 1
-        print(current_point)  # bar.show(current_point)
+        # print(current_point)  # bar.show(current_point)
     for i in range(train_images + validate_images, good_images):
         test_images_data.append(usable_age[i])
         role = "test"
@@ -171,9 +172,9 @@ with open(csv_path) as csvfile:
         face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = usable_age[i][3]
-        print(age)
+        # print(age)
         bin = usable_age[i][13]
-        print(bin)
+        # print(bin)
         filepath = 'faces/' + image_folder + '/' + image_name
         # print(filepath)
         source = os.path.join(source_path, filepath)
@@ -183,7 +184,7 @@ with open(csv_path) as csvfile:
         shutil.copy(source, destination)
         file.write(str(usable_age[i]) + '\n')
         current_point += 1
-        print(current_point)  # bar.show(current_point)
+        # print(current_point)  # bar.show(current_point)
 
     print("Total images: " + str(total_images))
     print("Usable images: " + str(good_images))
