@@ -4,9 +4,9 @@ This project is for the development of a convolutional neural network (CNN) for 
 
 It forms part of Maggie Liuzzi's & Mitchell Clarke's Spring 2018 Research Project at UTS, and is developed in collaboration with the UTS Magic Lab.
 
-The datasets explored are the following:
-    Wiki half of IMDB-WIKI (https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/ - In particular, "Wiki -> Download faces only (1GB)")
-    Adience (https://www.kaggle.com/ttungl/adience-benchmark-gender-and-age-classification - 1GB)
+The datasets explored are the following: a) Adience (https://www.kaggle.com/ttungl/adience-benchmark-gender-and-age-classification - 1GB), 
+     b) Wiki half of IMDB-WIKI (https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/ - In particular, "Wiki -> Download faces only (1GB)")
+    
 
 
 
