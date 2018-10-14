@@ -1,11 +1,9 @@
 import csv
-# import re
 import math
 
 with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open("/Users/maggieliuzzi/NeuralNetworks/Adience/adience_age_ED_data.csv",'w') as newf:
     reader = csv.reader(f)
     writer = csv.writer(newf)
-
 
     ages = []
     for line in reader:
@@ -27,13 +25,9 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
 
         if newline[3] not in ages:
             ages.append(newline[3])
-        # print(ages)
 
         writer.writerow(newline)
-
-
 f.close()
 newf.close()
-
 print("End of file.")
-# I then removed the age: -60100 and None rows manually and overwrote file
+# Then removed rows with age -60100 and None manually and overwrote file

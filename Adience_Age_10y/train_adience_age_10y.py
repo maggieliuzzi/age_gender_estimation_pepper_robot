@@ -1,14 +1,8 @@
-# The purpose of this file is to load and train the neural network
-# This is done by repurposing a MobileNetV2 model trained on ImageNet
-
-
 import numpy as np
 import os
 import ssl
 
-'''
-Ensures that Keras is using Theano as a back-end, then loads Keras
-'''
+# Ensures Keras is using Theano as a back-end, then loads Keras
 keras_path = os.path.join(os.path.expanduser('~'), '.keras')
 keras_json_path = os.path.join(keras_path, 'keras.json')
 if not os.path.isdir(keras_path):
@@ -20,7 +14,6 @@ with open(keras_json_path, 'w') as kf:
 from keras.applications.mobilenetv2 import MobileNetV2
 from keras import models, layers
 from keras.preprocessing.image import ImageDataGenerator
-
 
 '''
 +-----------------------+
@@ -56,33 +49,23 @@ The final Dense layer is replaced with a new one of size (2) for classifying mal
 
 np.random.seed(3)
 
-'''
-Define useful filepaths for later
-'''
-# home_path = os.path.dirname(__file__)
-home_path = "/Users/maggieliuzzi/agerecognition/"
+home_path = "/Users/maggieliuzzi/agerecognition/" # home_path = os.path.dirname(__file__)
 train_path = os.path.join(home_path, "dataset_adience_age_10y/train")
 validate_path = os.path.join(home_path, "dataset_adience_age_10y/validate")
 test_path = os.path.join(home_path, "dataset_adience_age_10y/test")
 
-'''
-Downloads MobileNetV2 without its classifier and freezes all but the last 4 layers
-'''
+# Download MobileNetV2 without its classifier and freeze all but the last 4 layers
 ssl._create_default_https_context = ssl._create_unverified_context
 model_mobile = MobileNetV2(weights='imagenet', input_shape=(224, 224, 3), include_top=False, pooling='avg')
 for layer in model_mobile.layers[:-4]:
     layer.trainable = False
 
-
 model_new = models.Sequential()
 model_new.add(model_mobile)
 model_new.add(layers.Dense(6, activation='softmax'))
-# model_new.add(layers.LeakyReLU(alpha=0.25))
 model_new.summary()
 
-'''
-Define the data generators, including random data transforms as it is being input
-'''
+# Define the data generators, including random data transforms as it is being input
 train_trans = ImageDataGenerator(rescale=1. / 255, rotation_range=36, width_shift_range=0.2,
                                  height_shift_range=0.2, horizontal_flip=True)
 validate_trans = ImageDataGenerator(rescale=1. / 255)
@@ -92,9 +75,7 @@ validate_generator = validate_trans.flow_from_directory(validate_path, target_si
                                                         batch_size=16, seed=3, class_mode='categorical',
                                                         shuffle=False)
 
-'''
-Train the neural network!
-'''
+# Train the neural network
 model_new.compile(optimizer='rmsprop',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])

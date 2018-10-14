@@ -1,40 +1,26 @@
-# The purpose of this file is to test the quality of the neural networks using data in /dataset/test/test
-# Arbitrary folders of test data aren't allowed at present. Instead, generate them using data_process.py
-
-from predict import prepare_model, predict_from_file
-from clint.textui import progress
+from predict_gender_age import prepare_model, predict_from_file
 import argparse
 import os
 import yaml
 import csv
 
-'''
-Parse and check arguments received at the command line
-'''
-
+# Parse and check arguments received at the command line
 parser = argparse.ArgumentParser(
-    description="Tests the quality of the provided CNN model using test data in the dataset folder.",
+    description="Test the quality of a CNN model passed as argument using test data in the dataset folder.",
     epilog="Created by Maria Liuzzi & Mitchell Clarke")
 parser.add_argument('--model', default=None, required=True,
-                    help="required; path to the neural network model file.")
+                    help="Path to the neural network model file.")
 args = parser.parse_args()
-
 if not os.path.isfile(args.model):
     print("ERROR: Could not find the neural network model file.")
     exit(1)
 
-'''
-Define useful filepaths for later
-'''
-
+# Define useful filepaths for later
 home_dir = os.path.dirname(__file__)
 train_dir = os.path.join(home_dir, 'dataset_adience_age_10_ED_bins/test/test')
 label_filename = os.path.join(home_dir, 'dataset_adience_age_10_ED_bins/labels.csv') # needs .txt?
 
-'''
-Load label.txt for checking answers later
-'''
-
+# Load label.txt for checking answers later
 mat_test_data = {}
 
 print("Reading labels.csv ...")
@@ -45,10 +31,7 @@ with open(label_filename, 'r') as file:
         mat_test_data[key] = record
 print("Labels loaded.")
 
-'''
-Test and report on network quality
-'''
-
+# Test and report on network quality
 print("Loading model ...")
 model = prepare_model(args.model)
 print("Model loaded.")
@@ -106,7 +89,6 @@ false_29_35 = 0
 false_36_46 = 0
 false_47_60 = 0
 
-
 predictions = []
 
 test_image_dir = os.listdir(train_dir)
@@ -154,12 +136,9 @@ print("True Males vs. False Females: " + str(male_true) + "/" + str(female_false
     (float(male_true) / float(male_true+female_false)) * 100) + "% correct)")
 
 print("\nCreating csv file containing results...")
-
 with open(args.model + '.csv', 'w') as csvfile:
     fieldnames = ['filepath', 'bin', 'test_score']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for prediction in predictions:
         writer.writerow(prediction)
-
-exit(0)

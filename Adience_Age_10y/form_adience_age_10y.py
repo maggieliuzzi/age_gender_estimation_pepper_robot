@@ -1,11 +1,9 @@
 import csv
-# import re
 import math
 
 with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open("/Users/maggieliuzzi/NeuralNetworks/Adience/adience_age_10y_data.csv",'w') as newf:
     reader = csv.reader(f)
     writer = csv.writer(newf)
-
 
     ages = []
     for line in reader:
@@ -39,16 +37,11 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
             age = "60+"
 
         newline[3] = age
-        print(newline)
 
         if newline[3] not in ages:
             ages.append(newline[3])
-        # print(ages)
 
         writer.writerow(newline)
-
-
 f.close()
 newf.close()
-
 print("End of file.")
