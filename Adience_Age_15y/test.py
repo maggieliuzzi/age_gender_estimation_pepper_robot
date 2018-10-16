@@ -30,6 +30,7 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test_
         print(probability_vector)
         predicted_age = np.dot(bin_vector, probability_vector)
         newline[14] = predicted_age
+        newline.append(int(round(predicted_age,0)))
         # inaccuracy = predicted_age - # bin_vector[i] of the right answer
         # print(predicted_age)
 
