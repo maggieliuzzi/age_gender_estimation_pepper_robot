@@ -5,9 +5,9 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
     reader = csv.reader(f)
     writer = csv.writer(newf)
 
-    ages = []
+    binned_ages = []
     for line in reader:
-        newline = line
+        newline = list(line)
         age = newline[3]
 
         if age[0] == "N":
@@ -20,22 +20,20 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
         age = int(age)
 
         if age <= 0:
-            age = ""
+            binned_age = ""
         elif age <= 15:
-            age = "1-15"
+            binned_age = "1-15"
         elif age <= 30:
-            age = "16-30"
+            binned_age = "16-30"
         elif age <= 45:
-            age = "31-45"
+            binned_age = "31-45"
         elif age <= 60:
-            age = "46-60"
+            binned_age = "46-60"
         else:
-            age = "60+"
+            binned_age = "60+"
 
         newline[3] = age
-
-        if newline[3] not in ages:
-            ages.append(newline[3])
+        newline.append(binned_age)
 
         writer.writerow(newline)
 f.close()

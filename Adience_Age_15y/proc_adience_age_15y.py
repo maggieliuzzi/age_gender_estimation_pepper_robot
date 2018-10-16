@@ -38,8 +38,8 @@ with open(csv_path) as csvfile:
         original_image = row[1]
         face_id = row[2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
-        age = row[3]
-        if age is not None:
+        binned_age = row[12]
+        if binned_age is not None:
             usable_age.append(row)
         gender = row[4]
         if gender is not None:
@@ -126,5 +126,6 @@ with open(csv_path) as csvfile:
     print("Testing images: " + str(test_images))
 
     file.close()
+    test_labels_file.close() # I had to then delete rows with age -60100 manually and re-randomise
 csvfile.close()
 print("Copied.")
