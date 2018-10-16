@@ -77,6 +77,6 @@ Eg: http://0.0.0.0:4000/predict
     "Male": 0.8979910016059875
 }
 
-* **test...py** scripts test the quality of a model with the images in the test/ folder.
+* **test...py** scripts test the quality of a model with the images in the test/ folder generated running proc...py.
 
 * **predict_gender_age.py** takes a gender-recognition model, an age-recognition model and an image as arguments and predicts the gender and age of the person in the image.

@@ -4,16 +4,13 @@ import numpy as np
 import csv
 
 parser = argparse.ArgumentParser(
-        description="Predicts age of person in image using a CNN model passed as an argument.")
+        description="Tests a CNN model passed as an argument against the images in the Test folder.")
 parser.add_argument('--model', default=None, required=True,
                         help="required; path to the neural network model file.")
-''' parser.add_argument('--pic', default=None, required=True,
-                        help="required; path to the image to be tested.") '''
 args = parser.parse_args()
 model = prepare_model(args.model)
-# image = args.pic
 
-with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/labels_new.csv",'r') as f, open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/labels_predictions.csv",'w') as newf:
+with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test_labels.csv",'r') as f, open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test_labels_predictions.csv",'w') as newf:
     reader = csv.reader(f)
     writer = csv.writer(newf)
 
@@ -23,10 +20,11 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/labels_new
         newline = line
         actual_age = newline[3]
 
-        path_to_test = "/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test"
+        path_to_test = "/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test/"
         original_image = newline[1]
         face_id = newline[2]
-        image = "coarse_tilt_aligned_face." + face_id + "." + original_image
+        # Had to remove the 's, spaces and [ ]s around values in the .csv file manually
+        image = path_to_test + "coarse_tilt_aligned_face." + face_id + "." + original_image
 
         probability_vector = predict_from_file(model, image)
         print(probability_vector)
