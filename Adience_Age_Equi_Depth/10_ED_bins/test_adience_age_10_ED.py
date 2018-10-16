@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 import csv
 
-# --model /Users/maggieliuzzi/agerecognition_13-10-2018/Comparable_Models/Age/10_ED_Bins/final_model_adience_age_10_ED_bins_10e_Theano_2.h5
+# --model /Users/maggieliuzzi/Comparable_Models/Age/10_ED_Bins/final_model_adience_age_10_ED_bins_10e_Theano_2.h5
 
 parser = argparse.ArgumentParser(
         description="Tests a CNN model passed as an argument against the images in the Test folder.")
@@ -12,6 +12,7 @@ parser.add_argument('--model', default=None, required=True,
 args = parser.parse_args()
 model = prepare_model(args.model)
 
+# I had to remove [ ] ' and spaces from test_labels.csv before running this script
 with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/test/test_labels.csv",'r') as f, open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/test/test_labels_predictions.csv",'w') as newf:
     reader = csv.reader(f)
     writer = csv.writer(newf)

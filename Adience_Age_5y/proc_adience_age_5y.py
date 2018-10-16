@@ -1,4 +1,3 @@
-import argparse
 import math
 import os
 import shutil
@@ -7,11 +6,12 @@ import csv
 home_path = "/Users/maggieliuzzi/agerecognition/"
 csv_path = "/Users/maggieliuzzi/NeuralNetworks/Adience/age_5y_data.csv"
 source_path = '/Users/maggieliuzzi/NeuralNetworks/Adience/'
-dataset_path = os.path.join(home_path, "dataset_adience_age_5y")
+dataset_path = os.path.join(home_path, "dataset_adience_age_5y/")
 
 train_path = os.path.join(dataset_path, "train")
 validate_path = os.path.join(dataset_path, "validate")
-test_path = os.path.join(dataset_path, "test", "test")
+test_path_t = os.path.join(dataset_path, "test", "test")
+test_path = os.path.join(dataset_path, "test/")
 
 train_path_0 = os.path.join(train_path, "1-5")
 train_path_1 = os.path.join(train_path, "6-10")
@@ -90,6 +90,8 @@ with open(csv_path) as csvfile:
 
     current_point = 0
     file = open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_5y/labels.csv", "w")
+    test_labels_file = open(test_path + "test_labels.csv", "w")
+
     # For all training images
     for i in range(0, train_images):
         train_images_data.append(usable_age[i])
@@ -132,11 +134,12 @@ with open(csv_path) as csvfile:
         age = usable_age[i][3]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        destination = os.path.join(home_path, "dataset_adience_age_5y", "test", "test")
-        shutil.copy(source, destination)
+        # destination = os.path.join(home_path, "dataset_adience_age_5y", "test", "test")
+        shutil.copy(source, test_path_t)
         file.write(str(usable_age[i]) + '\n')
+        test_labels_file.write(str(usable_age[i]) + '\n')
         current_point += 1
-        print(current_point)
+        # print(current_point)
 
     print("Total images: " + str(total_images))
     print("Usable images: " + str(good_images))
@@ -145,5 +148,6 @@ with open(csv_path) as csvfile:
     print("Testing images: " + str(test_images))
 
     file.close()
+    test_labels_file.close()
 csvfile.close()
 print("Copied.")

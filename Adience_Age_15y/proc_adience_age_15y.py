@@ -113,7 +113,7 @@ with open(csv_path) as csvfile:
         age = usable_age[i][3]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        destination = os.path.join(home_path, "dataset_adience_age_15y", "test", "test")
+        # destination = os.path.join(home_path, "dataset_adience_age_15y", "test", "test")
         shutil.copy(source, test_path_t)
         file.write(str(usable_age[i]) + '\n')
         test_labels_file.write(str(usable_age[i]) + '\n')

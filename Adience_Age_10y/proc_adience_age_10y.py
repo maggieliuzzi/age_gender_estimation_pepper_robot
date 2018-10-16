@@ -7,11 +7,12 @@ import csv
 home_path = "/Users/maggieliuzzi/agerecognition/"
 csv_path = "/Users/maggieliuzzi/NeuralNetworks/Adience/adience_age_10y_data.csv"
 source_path = '/Users/maggieliuzzi/NeuralNetworks/Adience/'
-dataset_path = os.path.join(home_path, "dataset_adience_age_10y")
+dataset_path = os.path.join(home_path, "dataset_adience_age_10y/")
 
 train_path = os.path.join(dataset_path, "train")
 validate_path = os.path.join(dataset_path, "validate")
-test_path = os.path.join(dataset_path, "test", "test")
+test_path_t = os.path.join(dataset_path, "test", "test")
+test_path = os.path.join(dataset_path, "test/")
 
 train_path_0 = os.path.join(train_path, "1-10")
 train_path_1 = os.path.join(train_path, "11-20")
@@ -75,6 +76,8 @@ with open(csv_path) as csvfile:
 
     current_point = 0
     file = open(dataset_path+"/labels.csv", "w")
+    test_labels_file = open(test_path + "test_labels.csv", "w")
+
     # For all training images
     for i in range(0, train_images):
         train_images_data.append(usable_age[i])
@@ -119,6 +122,7 @@ with open(csv_path) as csvfile:
         destination = os.path.join(home_path, "dataset_adience_age_10y", "test", "test")
         shutil.copy(source, destination)
         file.write(str(usable_age[i]) + '\n')
+        test_labels_file.write(str(usable_age[i]) + '\n')
         current_point += 1
 
     print("Total images: " + str(total_images))
@@ -128,5 +132,6 @@ with open(csv_path) as csvfile:
     print("Testing images: " + str(test_images))
 
     file.close()
+    test_labels_file.close()
 csvfile.close()
 print("Copied.")

@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 import csv
 
-# --model /Users/maggieliuzzi/agerecognition_13-10-2018/Comparable_Models/Demo/model_age_15y.h5
+# --model /Users/maggieliuzzi/Comparable_Models/Demo/model_age_15y.h5
 
 parser = argparse.ArgumentParser(
         description="Tests a CNN model passed as an argument against the images in the Test folder.")
@@ -62,6 +62,3 @@ newf.close()
 print("End of file.")
 
 # To Do: Add histogram visualisation
-
-# age: 28 /Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/test/test/coarse_tilt_aligned_face.828.11682572164_053efb176f_o.jpg
-# age: 17 /Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/test/test/coarse_tilt_aligned_face.512.11081151624_dbfb2edaaf_o.jpg
