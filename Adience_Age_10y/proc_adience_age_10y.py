@@ -1,4 +1,3 @@
-import argparse
 import math
 import os
 import shutil
@@ -27,8 +26,6 @@ validate_path_2 = os.path.join(validate_path, "21-30")
 validate_path_3 = os.path.join(validate_path, "31-40")
 validate_path_4 = os.path.join(validate_path, "41-50")
 validate_path_5 = os.path.join(validate_path, "51-60")
-
-test_path_t = os.path.join(test_path, "test")
 
 processed_paths = [train_path_0, train_path_1, train_path_2, train_path_3, train_path_4, train_path_5,
                    validate_path_0, validate_path_1, validate_path_2, validate_path_3, validate_path_4, validate_path_5,
