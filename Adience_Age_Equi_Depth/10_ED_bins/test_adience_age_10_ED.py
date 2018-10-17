@@ -53,8 +53,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/tes
         agg_age_bias += age_bias
         agg_abs_age_bias += age_bias
 
-        # Add test for gender under Adience_Gender
-
     print("Number of test images: " + str(line_count))
     print("Average age_bias: " + str(agg_age_bias / line_count))
     print("Average abs_age_bias: " + str(agg_abs_age_bias / line_count))

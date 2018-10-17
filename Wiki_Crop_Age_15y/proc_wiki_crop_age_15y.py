@@ -4,12 +4,14 @@ import shutil
 import math
 from datetime import datetime
 
-data_path = "/Users/maggieliuzzi/NeuralNetworks/wiki_crop"
-home_path = os.path.dirname(__file__)
-mat_path = os.path.join(data_path, "wiki.mat")
-train_path = os.path.join(home_path, "dataset/train")
-validate_path = os.path.join(home_path, "dataset/validate")
-test_path = os.path.join(home_path, "dataset/test")
+source_path = "/Users/maggieliuzzi/NeuralNetworks/wiki_crop"
+home_path = "/Users/maggieliuzzi/agerecognition/"
+mat_path = os.path.join(source_path, "wiki.mat")
+
+train_path = os.path.join(home_path, "wiki_dataset/train")
+validate_path = os.path.join(home_path, "wiki_dataset/validate")
+test_path = os.path.join(home_path, "wiki_dataset/test/")
+
 train_path_0 = os.path.join(train_path, "1-15")
 train_path_1 = os.path.join(train_path, "16-30")
 train_path_2 = os.path.join(train_path, "31-45")
@@ -25,7 +27,7 @@ validate_path_4 = os.path.join(validate_path, "61-75")
 validate_path_5 = os.path.join(validate_path, "76-90")
 validate_path_6 = os.path.join(validate_path, "91-115")
 test_path_t = os.path.join(test_path, "test")
-processed_paths = [train_path, validate_path, test_path, train_path_0, train_path_1, train_path_2,
+processed_paths = [source_path, train_path, validate_path, test_path, train_path_0, train_path_1, train_path_2,
                    train_path_3, train_path_4, train_path_5, train_path_6, validate_path_0, validate_path_1,
                    validate_path_2, validate_path_3, validate_path_4, validate_path_5, validate_path_6,
                    test_path_t]
@@ -80,44 +82,50 @@ print("Training images: " + str(train_images))
 print("Validation images: " + str(validate_images))
 print("Testing images: " + str(test_images))
 
-# Create dataset directory, the 'train', 'validate' and 'test' subfolders
+# Create wiki_dataset directory, the 'train', 'validate' and 'test' subfolders
 for path in processed_paths:
     if not os.path.isdir(path):
         os.makedirs(path)
         print("Created directory: " + path)
 
-# Populate folders the folders with the images from the dataset and dump labels to text for later
+# Populate folders the folders with the images from the wiki_dataset and dump labels to text for later
 current_point = 0
 end_point = len(mat_data_good)
-file = open("dataset/labels.txt", "w")
+file = open(home_path+"wiki_dataset/labels.txt", "w")
+test_labels_file = open(test_path + "test_labels.csv", "w")
+
+
 for image in mat_data_good:
-    source = os.path.join(data_path, image["filepath"])
+    source = os.path.join(source_path, image["filepath"])
     if image["age"] >= 1 and image["age"] <= 15:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                    "1-15" if image["role"] != "test" else "test")
     elif image["age"] >= 16 and image["age"] <= 30:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                        "16-30" if image["role"] != "test" else "test")
     elif image["age"] >= 31 and image["age"] <= 45:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                        "31-45" if image["role"] != "test" else "test")
     elif image["age"] >= 46 and image["age"] <= 60:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                    "46-60" if image["role"] != "test" else "test")
     elif image["age"] >= 61 and image["age"] <= 75:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                        "61-75" if image["role"] != "test" else "test")
     elif image["age"] >= 76 and image["age"] <= 90:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                        "76-90" if image["role"] != "test" else "test")
     elif image["age"] >= 91 and image["age"] <= 115:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                        "91-115" if image["role"] != "test" else "test")
     else:
-        destination = os.path.join(home_path, "dataset", image["role"],
+        destination = os.path.join(home_path, "wiki_dataset", image["role"],
                                    str(int(image["age"])) if image["role"] != "test" else "test")
+    if image["role"] == "test":
+        test_labels_file.write(str(image) + '\n')
     shutil.copy(source, destination)
     file.write(str(image) + '\n')
     current_point += 1
     print("Progress: " + str(current_point) + "/" + str(end_point) + " (Copied " + source + " to " + destination + ")")
 file.close()
+test_labels_file.close()
