@@ -14,7 +14,6 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test_labels.csv"
 
         filepath = filepath.split("/",1)[1]
         filepath = filepath.replace("'","")
-        print(filepath)
 
         gender = float(gender[10:])
         gender = int(round(gender,0))

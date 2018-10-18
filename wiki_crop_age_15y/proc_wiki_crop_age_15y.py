@@ -34,7 +34,6 @@ processed_paths = [source_path, train_path, validate_path, test_path, train_path
 
 # Load all of the labels from wiki.mat into a list of dictionaries
 mat = loadmat(mat_path)['wiki'][0][0]
-print(mat)
 total_images = len(mat[0][0])
 mat_data = [{"dob": mat[0][0][i],
              "date": mat[1][0][i],

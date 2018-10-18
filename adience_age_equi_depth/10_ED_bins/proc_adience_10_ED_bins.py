@@ -133,8 +133,7 @@ with open(csv_path) as csvfile:
         bin = usable_age[i][13]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        destination = os.path.join(home_path, "dataset_adience_age_10_ED_bins", "test", "test")
-        shutil.copy(source, destination)
+        shutil.copy(source, test_path_t)
         file.write(str(usable_age[i]) + '\n')
         test_labels_file.write(str(usable_age[i]) + '\n')
         current_point += 1
@@ -148,4 +147,4 @@ with open(csv_path) as csvfile:
     print("Validation images: " + str(validate_images))
     print("Testing images: " + str(test_images))
 
-print("Copied.")
+print("Processing done.")

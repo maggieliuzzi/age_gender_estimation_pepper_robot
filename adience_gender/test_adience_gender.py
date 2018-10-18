@@ -16,8 +16,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_gender/test/test_l
     reader = csv.reader(f)
     writer = csv.writer(newf)
 
-    # bin_vector = ["f","m"]
-
     line_count = 0
     correct_guesses = 0
     wrong_guesses = 0
@@ -36,9 +34,8 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_gender/test/test_l
 
         probability_vector = predict_from_file(model_gender, image)
         predicted_gender = "Female" if probability_vector[0] >= probability_vector[1] else "Male"
-        newline.append(predicted_gender) # will append it in newline[13]
+        newline.append(predicted_gender)
 
-        # inaccuracy = predicted_age - # bin_vector[i] of the right answer
         if predicted_gender == actual_gender:
             accuracy = "Y"
             correct_guesses += 1

@@ -11,16 +11,13 @@ app = flask.Flask(__name__)
 model_age = None
 model_gender = None
 
-# gender model: /Users/maggieliuzzi/agerecognition/Comparable_Models/Gender/final_model_adience_gender_8e_Theano.h5
-# age 15y: /Users/maggieliuzzi/agerecognition/Comparable_Models/Age/15y/final_model_adience_age_15y_2e.h5
-
 '''
 Receive images via POST at /predict and respond with JSON containing the prediction vector
 '''
 @app.route("/predict", methods=["POST"])
 def predict():
     data = {"success": False}
-    print("\nReceived a POST request...")
+    print("\nReceived a POST request.")
 
     # Ensures there is an 'image' attribute in POST request
     if flask.request.files.get("image"):

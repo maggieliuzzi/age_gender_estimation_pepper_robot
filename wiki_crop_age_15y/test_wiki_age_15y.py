@@ -46,14 +46,12 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/form_test_labels
         newline.append(predicted_gender)
 
         probability_vector_age = predict_from_file(model_age, image)
-        print(probability_vector_age)
         predicted_age = np.dot(bin_vector_age, probability_vector_age)
         predicted_age = int(predicted_age)
-        print(int(round(predicted_age,0)))
         newline.append(predicted_age)
 
         if predicted_gender == actual_gender:
-            accuracy = "Y"
+            accuracy = "Y" # check
             correct_guesses += 1
         else:
             accuracy = "N"

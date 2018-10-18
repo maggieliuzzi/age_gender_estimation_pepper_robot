@@ -11,7 +11,7 @@ model_age = None
 model_gender = None
 
 # Eg. model_gender: /Users/maggieliuzzi/agerecognition/Comparable_Models/Gender/final_model_adience_gender_8e_Theano.h5
-# Eg. model_age_10_ED: /Users/maggieliuzzi/agerecognition/Comparable_Models/Age/10_ED_Bins/final_model_adience_age_10_ED_bins_10e_Theano_2.h5
+# Eg. model_age_10y: /Users/maggieliuzzi/agerecognition/Comparable_Models/Age/10y/final_model_adience_age_10y_3e.h5
 
 # Receive images via POST at /predict and respond with JSON containing the prediction vector
 @app.route("/predict", methods=["POST"])
@@ -24,11 +24,9 @@ def predict():
         image = flask.request.files["image"].read()
 
         raw_prediction_age = predict_from_pil(model_age, image)
-        print("Probability of [1-4, 5-7, 8-12, 13-16, 17-21, 22-27, 28, 29-35, 36-46, 47-60]: " + str(raw_prediction_age))
-        data["prediction_age"] = {"1-4": float(raw_prediction_age[0]), "5-7": float(raw_prediction_age[1]), "8-12": float(raw_prediction_age[2]),
-                              "13-16": float(raw_prediction_age[3]), "17-21": float(raw_prediction_age[4]), "22-27": float(raw_prediction_age[5]),
-                              "28": float(raw_prediction_age[6]), "29-35": float(raw_prediction_age[7]), "36-46": float(raw_prediction_age[8]),
-                              "47-60": float(raw_prediction_age[9])}
+        print("Probability of [1-10, 11-20, 21-30, 31-40, 41-50, 51-60]: " + str(raw_prediction_age))
+        data["prediction_age"] = {"1-10": float(raw_prediction_age[0]), "11-20": float(raw_prediction_age[1]), "21-30": float(raw_prediction_age[2]),
+                              "31-40": float(raw_prediction_age[3]), "41-50": float(raw_prediction_age[4]), "51-60": float(raw_prediction_age[5])}
 
         raw_prediction_gender = predict_from_pil(model_gender, image)
         print("Probability of [Female, Male]: " + str(raw_prediction_gender))
@@ -40,7 +38,7 @@ def predict():
 
     return flask.jsonify(data)
 
-# When this server_gender_age_15y.py script is ran directly, prepare the model + server to take requests
+# When this script is ran directly, prepare the model + server to take requests
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Starts server to predict if a person in an image is male or female using a CNN model.",

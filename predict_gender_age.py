@@ -79,5 +79,5 @@ if __name__ == "__main__":
     model_age = prepare_model(args.model_age)
     raw_prediction_age = predict_from_file(model_age, args.pic)
 
-    # print("\nProbabilities (Gender): " + str(raw_prediction_gender))
-    # print("\nProbabilities (Age): " + str(raw_prediction_age))
+    print("\nProbabilities (Gender): " + str(raw_prediction_gender))
+    print("\nProbabilities (Age): " + str(raw_prediction_age))

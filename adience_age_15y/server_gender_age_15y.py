@@ -10,8 +10,8 @@ app = flask.Flask(__name__)
 model_age = None
 model_gender = None
 
-# Eg. model_gender: /Users/maggieliuzzi/agerecognition/Comparable_Models/Gender/final_model_adience_gender_8e_Theano.h5
-# Eg. model_age_5y: /Users/maggieliuzzi/agerecognition/Comparable_Models/Age/5y/final_model_adience_age_5YearSlots_10e.h5
+# Eg. gender model: /Users/maggieliuzzi/agerecognition/Comparable_Models/Gender/final_model_adience_gender_8e_Theano.h5
+# Eg. age 15y model: /Users/maggieliuzzi/agerecognition/Comparable_Models/Age/15y/final_model_adience_age_15y_2e.h5
 
 # Receive images via POST at /predict and respond with JSON containing the prediction vector
 @app.route("/predict", methods=["POST"])
@@ -24,11 +24,9 @@ def predict():
         image = flask.request.files["image"].read()
 
         raw_prediction_age = predict_from_pil(model_age, image)
-        print("Probability of [1-5, 6-10, 11-15, 16-20, 21-25, 26-30, 31-35, 36-40, 41-45, 46-50, 51-55, 56-60]: " + str(raw_prediction_age))
-        data["prediction_age"] = {"1-5": float(raw_prediction_age[0]), "6-10": float(raw_prediction_age[1]), "11-15": float(raw_prediction_age[2]),
-                              "16-20": float(raw_prediction_age[3]), "21-25": float(raw_prediction_age[4]), "26-30": float(raw_prediction_age[5]),
-                              "31-35": float(raw_prediction_age[6]), "36-40": float(raw_prediction_age[7]), "41-45": float(raw_prediction_age[8]),
-                              "46-50": float(raw_prediction_age[9]), "51-55": float(raw_prediction_age[10]), "56-60": float(raw_prediction_age[11])}
+        print("Probability of [1-15, 16-30, 31-45, 46-60]: " + str(raw_prediction_age))
+        data["prediction_age"] = {"1-15": float(raw_prediction_age[0]), "16-30": float(raw_prediction_age[1]), "31-45": float(raw_prediction_age[2]),
+                              "46-60": float(raw_prediction_age[3])}
 
         raw_prediction_gender = predict_from_pil(model_gender, image)
         print("Probability of [Female, Male]: " + str(raw_prediction_gender))
@@ -40,12 +38,12 @@ def predict():
 
     return flask.jsonify(data)
 
-# When this server_gender_age_15y.py script is ran directly, prepare the model + server to take requests
+# When this script is ran directly, prepare the model + server to take requests
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Starts server to predict if a person in an image is male or female using a CNN model.",
         epilog="Created by Maria Liuzzi & Mitchell Clarke")
-    parser.add_argument('--model_age_10_ED', default=None, required=True,
+    parser.add_argument('--model_age', default=None, required=True,
                         help="required; path to the neural network model_age file.")
     parser.add_argument('--model_gender', default=None, required=True,
                         help="required; path to the neural network model_gender file.")

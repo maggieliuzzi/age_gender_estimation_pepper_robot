@@ -23,7 +23,6 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
 
         if age > 0 and age is not None:
             newline[3] = age
-            print(newline)
 
         if newline[3] not in ages:
             ages.append(newline[3])

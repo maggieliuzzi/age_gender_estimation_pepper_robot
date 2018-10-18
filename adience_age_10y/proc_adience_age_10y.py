@@ -4,19 +4,32 @@ import shutil
 import csv
 
 home_path = "/Users/maggieliuzzi/agerecognition/"
-csv_path = "/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv"
+csv_path = "/Users/maggieliuzzi/NeuralNetworks/Adience/adience_age_10y_data.csv"
 source_path = '/Users/maggieliuzzi/NeuralNetworks/Adience/'
-dataset_path = os.path.join(home_path, "dataset_adience_gender/")
+dataset_path = os.path.join(home_path, "dataset_adience_age_10y/")
 
 train_path = os.path.join(dataset_path, "train")
 validate_path = os.path.join(dataset_path, "validate")
-train_path_0 = os.path.join(train_path, "f")
-train_path_1 = os.path.join(train_path, "m")
-validate_path_0 = os.path.join(validate_path, "f")
-validate_path_1 = os.path.join(validate_path, "m")
 test_path_t = os.path.join(dataset_path, "test", "test")
 test_path = os.path.join(dataset_path, "test/")
-dataset_path_tree = [train_path_0, train_path_1, validate_path_0, validate_path_1, test_path, test_path_t]
+
+train_path_0 = os.path.join(train_path, "1-10")
+train_path_1 = os.path.join(train_path, "11-20")
+train_path_2 = os.path.join(train_path, "21-30")
+train_path_3 = os.path.join(train_path, "31-40")
+train_path_4 = os.path.join(train_path, "41-50")
+train_path_5 = os.path.join(train_path, "51-60")
+
+validate_path_0 = os.path.join(validate_path, "1-10")
+validate_path_1 = os.path.join(validate_path, "11-20")
+validate_path_2 = os.path.join(validate_path, "21-30")
+validate_path_3 = os.path.join(validate_path, "31-40")
+validate_path_4 = os.path.join(validate_path, "41-50")
+validate_path_5 = os.path.join(validate_path, "51-60")
+
+processed_paths = [train_path_0, train_path_1, train_path_2, train_path_3, train_path_4, train_path_5,
+                   validate_path_0, validate_path_1, validate_path_2, validate_path_3, validate_path_4, validate_path_5,
+                   test_path_t]
 
 with open(csv_path) as csvfile:
     reader = csv.reader(csvfile)
@@ -28,7 +41,7 @@ with open(csv_path) as csvfile:
         image_folder = row[0]
         original_image = row[1]
         face_id = row[2]
-        image_name = "coarse_tilt_aligned_face."+face_id+"."+original_image
+        image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
         age = row[3]
         if age is not None:
             usable_age.append(row)
@@ -40,7 +53,7 @@ with open(csv_path) as csvfile:
     csvfile.close()
     print("Loaded data from " + csv_path)
 
-    for path in dataset_path_tree:
+    for path in processed_paths:
         if not os.path.isdir(path):
             os.makedirs(path)
             print("Created directory: " + path)
@@ -48,7 +61,7 @@ with open(csv_path) as csvfile:
             print("Directory already exists: " + path)
 
     # Assumes all records with an age value are usable
-    good_images = len(usable_gender)
+    good_images = len(usable_age)
     train_cutoff = 0.64
     validate_cutoff = 0.8
     train_images = int(math.floor(good_images * train_cutoff))
@@ -60,61 +73,54 @@ with open(csv_path) as csvfile:
     test_images_data = []
 
     current_point = 0
-    end_point = len(usable_gender)
-    file = open(""
-                "labels.csv", "w")
+    file = open(dataset_path+"/labels.csv", "w")
     test_labels_file = open(test_path + "test_labels.csv", "w")
 
     # For all training images
-    for i in range(0,train_images):
-        train_images_data.append(usable_gender[i])
+    for i in range(0, train_images):
+        train_images_data.append(usable_age[i])
         role = "train"
-        image_folder = usable_gender[i][0]
-        original_image = usable_gender[i][1]
-        face_id = usable_gender[i][2]
-        image_name = "coarse_tilt_aligned_face."+face_id+"."+original_image
-        gender = usable_gender[i][4]
+        image_folder = usable_age[i][0]
+        original_image = usable_age[i][1]
+        face_id = usable_age[i][2]
+        image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
+        age = usable_age[i][3]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        destination = os.path.join(home_path, "dataset_adience_gender", "train", gender)
+        destination = os.path.join(home_path, "dataset_adience_age_10y", "train", age)
         shutil.copy(source, destination)
-        file.write(str(usable_gender[i]) + '\n')
+        file.write(str(usable_age[i]) + '\n')
         current_point += 1
     # For all validation images
-    for i in range(train_images,train_images + validate_images):
-        validate_images_data.append(usable_gender[i])
+    for i in range(train_images, train_images + validate_images):
+        validate_images_data.append(usable_age[i])
         role = "validate"
-        image_folder = usable_gender[i][0]
-        original_image = usable_gender[i][1]
-        face_id = usable_gender[i][2]
-        image_name = "coarse_tilt_aligned_face."+face_id+"."+original_image
-        gender = usable_gender[i][4]
+        image_folder = usable_age[i][0]
+        original_image = usable_age[i][1]
+        face_id = usable_age[i][2]
+        image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
+        age = usable_age[i][3]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        destination = os.path.join(home_path, "dataset_adience_gender", "validate", gender)
+        destination = os.path.join(home_path, "dataset_adience_age_10y", "validate", age)
         shutil.copy(source, destination)
-        file.write(str(usable_gender[i]) + '\n')
+        file.write(str(usable_age[i]) + '\n')
         current_point += 1
     # For all testing images
-    for i in range(train_images + validate_images,good_images):
-        test_images_data.append(usable_gender[i])
+    for i in range(train_images + validate_images, good_images):
+        test_images_data.append(usable_age[i])
         role = "test"
-        image_folder = usable_gender[i][0]
-        original_image = usable_gender[i][1]
-        face_id = usable_gender[i][2]
+        image_folder = usable_age[i][0]
+        original_image = usable_age[i][1]
+        face_id = usable_age[i][2]
         image_name = "coarse_tilt_aligned_face." + face_id + "." + original_image
-        gender = usable_gender[i][4]
-        print(gender)
+        age = usable_age[i][3]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        # destination = os.path.join(home_path, "dataset_adience_gender", "test", "test")
         shutil.copy(source, test_path_t)
-        file.write(str(usable_gender[i]) + '\n')
+        file.write(str(usable_age[i]) + '\n')
         test_labels_file.write(str(usable_age[i]) + '\n')
         current_point += 1
-
-    file.close()
-    test_labels_file.close()
 
     print("Total images: " + str(total_images))
     print("Usable images: " + str(good_images))
@@ -122,4 +128,6 @@ with open(csv_path) as csvfile:
     print("Validation images: " + str(validate_images))
     print("Testing images: " + str(test_images))
 
-print("Copied.")
+    file.close()
+    test_labels_file.close()
+print("Processing done.")
