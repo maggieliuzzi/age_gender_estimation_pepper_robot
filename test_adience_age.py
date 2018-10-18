@@ -2,6 +2,7 @@ from predict_gender_age import predict_from_file, prepare_model
 import argparse
 import numpy as np
 import csv
+import os
 
 # --model /Users/maggieliuzzi/Comparable_Models/Age/5y/final_model_adience_age_5YearSlots_10e.h5
 
@@ -9,8 +10,11 @@ parser = argparse.ArgumentParser(
         description="Tests a CNN model passed as an argument against the images in the Test folder.")
 parser.add_argument('--model', default=None, required=True,
                         help="required; path to the neural network model file.")
+parser.add_argument('--bucketsize', default=None, required=True,
+                        help="the age range of a single bucket in the prediction; required; must be: 15, 10 or 5.")
 args = parser.parse_args()
 model = prepare_model(args.model)
+bucket_size = int(args.bucketsize)
 
 home_path = os.path.dirname(__file__)
 
@@ -19,7 +23,17 @@ with open(home_path+"dataset_adience_age_5y/test/test_labels.csv",'r') as f, ope
     reader = csv.reader(f)
     writer = csv.writer(newf)
 
-    bin_vector = [3, 8, 13, 18, 23, 28, 33, 38, 43, 48, 53, 58]
+    bin_vector = []
+    bin_vector.extend(
+        [(1 + bucket_size) / 2, (bucket_size + bucket_size * 2) / 2, (bucket_size * 2 + bucket_size * 3) / 2,
+         (bucket_size * 3 + bucket_size * 4) / 2])
+    if bucket_size < 15:
+        bin_vector.extend([(bucket_size * 4 + bucket_size * 5) / 2, (bucket_size * 5 + bucket_size * 6) / 2])
+    if bucket_size < 10:
+        bin_vector.extend([(bucket_size * 6 + bucket_size * 7) / 2, (bucket_size * 7 + bucket_size * 8) / 2,
+                          (bucket_size * 8 + bucket_size * 9) / 2,
+                          (bucket_size * 9 + bucket_size * 10) / 2, (bucket_size * 10 + bucket_size * 11) / 2,
+                          (bucket_size * 11 + bucket_size * 12) / 2])
 
     line_count = 0
     agg_age_bias = 0
