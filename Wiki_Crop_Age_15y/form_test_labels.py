@@ -1,5 +1,4 @@
 import csv
-import math
 
 with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test_labels.csv",'r') as f, open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/form_test_labels.csv",'w') as newf:
     reader = csv.reader(f)

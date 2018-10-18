@@ -1,6 +1,5 @@
 from predict_gender_age import predict_from_file, prepare_model
 import argparse
-import numpy as np
 import csv
 
 # --model_gender /Users/maggieliuzzi/Comparable_Models/Gender/Adience/final_model_adience_gender_8e_Theano.h5
