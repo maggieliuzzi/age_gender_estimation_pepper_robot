@@ -24,7 +24,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test_
 
     for line in reader:
         newline = line
-        f.close()
 
         actual_age = newline[3]
 
@@ -37,7 +36,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test_
         probability_vector = predict_from_file(model, image)
         predicted_age = np.dot(bin_vector, probability_vector)
         predicted_age = int(predicted_age)
-        print(int(round(predicted_age,0)))
         newline.append(predicted_age)
         actual_age = int(actual_age)
         age_bias = predicted_age - actual_age
@@ -50,8 +48,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_15y/test/test_
         print("line_count: " + str(line_count))
         agg_age_bias += age_bias
         agg_abs_age_bias += age_bias
-
-    newf.close()
 
     print("Number of test images: " + str(line_count))
     print("Average age_bias: " + str(agg_age_bias / line_count))

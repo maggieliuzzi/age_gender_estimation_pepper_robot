@@ -1,6 +1,14 @@
 import numpy as np
 import os
 import ssl
+import argparse
+
+parser = argparse.ArgumentParser(
+    description="Trains a convolutional neural network for detecting age using Adience.",
+    epilog="Created by Maria Liuzzi & Mitchell Clarke")
+parser.add_argument('--epochs', default=1,
+                    help="the number of epochs to train the network for.")
+args = parser.parse_args()
 
 # Ensures that Keras is using Theano as a back-end, then loads Keras
 keras_path = os.path.join(os.path.expanduser('~'), '.keras')
@@ -49,7 +57,7 @@ The final Dense layer is replaced with a new one of size (2) for classifying mal
 
 np.random.seed(3)
 
-home_path = "/Users/maggieliuzzi/agerecognition/" # home_path = os.path.dirname(__file__)
+home_path = os.path.dirname(__file__)
 train_path = os.path.join(home_path, "dataset_adience_gender/train")
 validate_path = os.path.join(home_path, "dataset_adience_gender/validate")
 test_path = os.path.join(home_path, "dataset_adience_gender/test")
@@ -83,6 +91,6 @@ model_new.compile(optimizer='rmsprop',
 print(train_generator)
 print(validate_generator)
 
-model_new.fit_generator(train_generator, epochs=8, steps_per_epoch=len(train_generator), verbose=1,
+model_new.fit_generator(train_generator, epochs=int(args.epochs), steps_per_epoch=len(train_generator), verbose=1,
                         validation_data=validate_generator, validation_steps=len(validate_generator))
 model_new.save('final_model_adience_gender.h5')

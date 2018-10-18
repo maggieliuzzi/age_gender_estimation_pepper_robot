@@ -50,7 +50,7 @@ The final Dense layer is replaced with a new one of size (2) for classifying mal
 np.random.seed(3)
 
 # Define useful filepaths for later
-home_path = "/Users/maggieliuzzi/agerecognition/" # home_path = os.path.dirname(__file__)
+home_path = os.path.dirname(__file__)
 train_path = os.path.join(home_path, "wiki_dataset/train")
 validate_path = os.path.join(home_path, "wiki_dataset/validate")
 test_path = os.path.join(home_path, "wiki_dataset/test")

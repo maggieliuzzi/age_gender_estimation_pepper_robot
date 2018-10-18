@@ -26,7 +26,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_5y/test/test_l
 
     for line in reader:
         newline = line
-        f.close()
 
         actual_age = newline[3]
 
@@ -51,8 +50,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_5y/test/test_l
         print("line_count: " + str(line_count))
         agg_age_bias += age_bias
         agg_abs_age_bias += age_bias
-
-    newf.close()
 
     print("Number of test images: " + str(line_count))
     print("Average age_bias: " + str(agg_age_bias / line_count))

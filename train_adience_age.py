@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(
     description="Trains a convolutional neural network for detecting age using Adience.",
     epilog="Created by Maria Liuzzi & Mitchell Clarke")
 parser.add_argument('--bucketsize', default=None, required=True,
-                    help="the age range of a single bucket in the prediction; required.")
+                    help="the age range of a single bucket in the prediction; required; must be 15, 10 or 5.")
 parser.add_argument('--epochs', default=1,
                     help="the number of epochs to train the network for.")
 args = parser.parse_args()

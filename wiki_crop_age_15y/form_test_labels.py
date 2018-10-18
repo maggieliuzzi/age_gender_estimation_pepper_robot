@@ -6,7 +6,6 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test_labels.csv"
 
     for line in reader:
         newline = list(line)
-        f.close()
 
         filepath = newline[4]
         gender = newline[6]
@@ -26,5 +25,5 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test_labels.csv"
         newline[7] = age
 
         writer.writerow(newline)
-newf.close()
+
 print("End of file.")

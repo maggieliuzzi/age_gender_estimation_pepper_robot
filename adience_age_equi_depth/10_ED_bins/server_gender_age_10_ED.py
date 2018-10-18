@@ -45,7 +45,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Starts server to predict if a person in an image is male or female using a CNN model.",
         epilog="Created by Maria Liuzzi & Mitchell Clarke")
-    parser.add_argument('--model_age_10_ED', default=None, required=True,
+    parser.add_argument('--model_age', default=None, required=True,
                         help="required; path to the neural network model_age file.")
     parser.add_argument('--model_gender', default=None, required=True,
                         help="required; path to the neural network model_gender file.")

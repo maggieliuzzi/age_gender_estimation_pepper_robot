@@ -1,14 +1,14 @@
 import csv
 import math
 
-with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open("/Users/maggieliuzzi/NeuralNetworks/Adience/age_5y_data.csv",'w') as newf:
+# local path to Adience dataset
+with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open("/Users/maggieliuzzi/NeuralNetworks/Adience/adience_age_5y_data.csv",'w') as newf:
     reader = csv.reader(f)
     writer = csv.writer(newf)
 
     binned_ages = []
     for line in reader:
         newline = list(line)
-        f.close()
 
         age = newline[3]
 
@@ -57,5 +57,4 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
             binned_ages.append(newline[3])
 
         writer.writerow(newline)
-newf.close()
 print("End of file.")
