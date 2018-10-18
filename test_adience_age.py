@@ -4,8 +4,6 @@ import numpy as np
 import csv
 import os
 
-# --model /Users/maggieliuzzi/Comparable_Models/Age/5y/final_model_adience_age_5YearSlots_10e.h5
-
 parser = argparse.ArgumentParser(
         description="Tests a CNN model passed as an argument against the images in the Test folder.")
 parser.add_argument('--model', default=None, required=True,
@@ -44,7 +42,7 @@ with open(home_path+"dataset_adience_age_5y/test/test_labels.csv",'r') as f, ope
 
         actual_age = newline[3]
 
-        path_to_test = "/Users/maggieliuzzi/agerecognition/dataset_adience_age_5y/test/test/"
+        path_to_test = home_path+"dataset_adience_age_5y/test/test/"
         original_image = newline[1]
         face_id = newline[2]
         # Had to remove the 's, spaces and [ ]s around values in the .csv file manually
