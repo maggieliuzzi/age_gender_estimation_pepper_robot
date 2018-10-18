@@ -24,6 +24,8 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_gender/test/test_l
 
     for line in reader:
         newline = line
+        f.close()
+
         actual_gender = newline[4]
 
         path_to_test = "/Users/maggieliuzzi/agerecognition/dataset_adience_gender/test/test/"
@@ -49,6 +51,8 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_gender/test/test_l
         line_count += 1
         print("line_count: " + str(line_count))
 
+    newf.close()
+
     print("Number of test images: " + str(line_count))
     print("correct_guesses: " + str(correct_guesses))
     perc_correct_guesses = correct_guesses / line_count
@@ -56,8 +60,6 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_gender/test/test_l
     print("wrong_guesses: " + str(wrong_guesses))
     perc_wrong_guesses = wrong_guesses / line_count
     print("% wrong_guesses: " + perc_wrong_guesses)
-f.close()
-newf.close()
-print("End of file.")
 
+print("End of file.")
 # To Do: Add histogram visualisation

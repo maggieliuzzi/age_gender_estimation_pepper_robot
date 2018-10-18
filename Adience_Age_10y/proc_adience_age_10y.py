@@ -50,6 +50,7 @@ with open(csv_path) as csvfile:
             usable_gender.append(row)
         role = None
         total_images += 1
+    csvfile.close()
     print("Loaded data from " + csv_path)
 
     for path in processed_paths:
@@ -130,5 +131,4 @@ with open(csv_path) as csvfile:
 
     file.close()
     test_labels_file.close()
-csvfile.close()
 print("Copied.")

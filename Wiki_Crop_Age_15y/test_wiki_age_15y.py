@@ -32,6 +32,7 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/form_test_labels
 
     for line in reader:
         newline = line
+        f.close()
 
         path_to_test = "/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test/"
         image_name = newline[4]
@@ -71,6 +72,8 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/form_test_labels
         agg_age_bias += age_bias
         agg_abs_age_bias += age_bias
 
+    newf.close()
+
     print("Number of test images: " + str(line_count))
     print("correct_guesses: " + str(correct_guesses))
     perc_correct_guesses = correct_guesses / line_count
@@ -83,8 +86,5 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/form_test_labels
     print("Average age_bias: " + str(agg_age_bias / line_count))
     print("Average abs_age_bias: " + str(agg_abs_age_bias / line_count))
 
-f.close()
-newf.close()
 print("End of file.")
-
 # To Do: Add histogram visualisation

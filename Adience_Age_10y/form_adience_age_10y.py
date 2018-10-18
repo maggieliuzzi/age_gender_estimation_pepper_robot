@@ -8,6 +8,8 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
     binned_ages = []
     for line in reader:
         newline = list(line)
+        f.close()
+
         age = newline[3]
 
         if age[0] == "N":
@@ -43,6 +45,5 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
             binned_ages.append(newline[3])
 
         writer.writerow(newline)
-f.close()
 newf.close()
 print("End of file.")

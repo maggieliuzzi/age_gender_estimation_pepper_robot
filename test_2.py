@@ -27,6 +27,7 @@ print("Reading labels.csv ...")
 with open(label_filename, 'r') as file:
     for line in file:
         record = yaml.load(line)
+        file.close()
         key = os.path.basename(record['filepath'])
         mat_test_data[key] = record
 print("Labels loaded.")
@@ -142,3 +143,4 @@ with open(args.model + '.csv', 'w') as csvfile:
     writer.writeheader()
     for prediction in predictions:
         writer.writerow(prediction)
+csvfile.close()

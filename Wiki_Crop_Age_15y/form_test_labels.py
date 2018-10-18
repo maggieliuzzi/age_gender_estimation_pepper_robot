@@ -6,6 +6,7 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test_labels.csv"
 
     for line in reader:
         newline = list(line)
+        f.close()
 
         filepath = newline[4]
         gender = newline[6]
@@ -17,17 +18,14 @@ with open("/Users/maggieliuzzi/agerecognition/wiki_dataset/test/test_labels.csv"
 
         gender = float(gender[10:])
         gender = int(round(gender,0))
-        # print(gender)
 
         age = age[7:]
         age = int(age)
-        # print(age)
 
         newline[4] = filepath
         newline[6] = gender
         newline[7] = age
 
         writer.writerow(newline)
-f.close()
 newf.close()
 print("End of file.")

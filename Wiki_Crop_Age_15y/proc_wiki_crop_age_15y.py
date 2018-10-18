@@ -94,7 +94,6 @@ end_point = len(mat_data_good)
 file = open(home_path+"wiki_dataset/labels.txt", "w")
 test_labels_file = open(test_path + "test_labels.csv", "w")
 
-
 for image in mat_data_good:
     source = os.path.join(source_path, image["filepath"])
     if image["age"] >= 1 and image["age"] <= 15:
@@ -127,5 +126,6 @@ for image in mat_data_good:
     file.write(str(image) + '\n')
     current_point += 1
     print("Progress: " + str(current_point) + "/" + str(end_point) + " (Copied " + source + " to " + destination + ")")
+
 file.close()
 test_labels_file.close()

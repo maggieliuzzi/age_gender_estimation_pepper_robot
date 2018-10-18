@@ -62,6 +62,7 @@ with open(csv_path) as csvfile:
             usable_gender.append(row)
         role = None
         total_images += 1
+    csvfile.close()
     print("Loaded data from " + csv_path)
 
     for path in processed_paths:
@@ -138,12 +139,13 @@ with open(csv_path) as csvfile:
         test_labels_file.write(str(usable_age[i]) + '\n')
         current_point += 1
 
+    file.close()
+    test_labels_file.close()
+
     print("Total images: " + str(total_images))
     print("Usable images: " + str(good_images))
     print("Training images: " + str(train_images))
     print("Validation images: " + str(validate_images))
     print("Testing images: " + str(test_images))
 
-    file.close()
-csvfile.close()
 print("Copied.")

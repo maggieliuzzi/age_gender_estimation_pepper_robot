@@ -8,6 +8,8 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
     ages = []
     for line in reader:
         newline = line
+        f.close()
+
         age = newline[3]
 
         if age[0] == "N":
@@ -27,7 +29,6 @@ with open("/Users/maggieliuzzi/NeuralNetworks/Adience/data.csv",'r') as f, open(
             ages.append(newline[3])
 
         writer.writerow(newline)
-f.close()
 newf.close()
 print("End of file.")
 # Then removed rows with age -60100 and None manually and overwrote file

@@ -25,6 +25,8 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/tes
 
     for line in reader:
         newline = line
+        f.close()
+
         actual_age = newline[3]
 
         path_to_test = "/Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/test/test/"
@@ -53,11 +55,11 @@ with open("/Users/maggieliuzzi/agerecognition/dataset_adience_age_10_ED_bins/tes
         agg_age_bias += age_bias
         agg_abs_age_bias += age_bias
 
+    newf.close()
+
     print("Number of test images: " + str(line_count))
     print("Average age_bias: " + str(agg_age_bias / line_count))
     print("Average abs_age_bias: " + str(agg_abs_age_bias / line_count))
-f.close()
-newf.close()
-print("End of file.")
 
+print("End of file.")
 # To Do: Add histogram visualisation

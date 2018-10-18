@@ -67,6 +67,7 @@ with open(csv_path) as csvfile:
             usable_gender.append(row)
         role = None
         total_images += 1
+    csvfile.close()
     print("Loaded data from " + csv_path)
 
     for path in processed_paths:
@@ -134,12 +135,13 @@ with open(csv_path) as csvfile:
         age = usable_age[i][3]
         filepath = 'faces/' + image_folder + '/' + image_name
         source = os.path.join(source_path, filepath)
-        # destination = os.path.join(home_path, "dataset_adience_age_5y", "test", "test")
         shutil.copy(source, test_path_t)
         file.write(str(usable_age[i]) + '\n')
         test_labels_file.write(str(usable_age[i]) + '\n')
         current_point += 1
-        # print(current_point)
+
+    file.close()
+    test_labels_file.close()
 
     print("Total images: " + str(total_images))
     print("Usable images: " + str(good_images))
@@ -147,7 +149,4 @@ with open(csv_path) as csvfile:
     print("Validation images: " + str(validate_images))
     print("Testing images: " + str(test_images))
 
-    file.close()
-    test_labels_file.close()
-csvfile.close()
 print("Copied.")
