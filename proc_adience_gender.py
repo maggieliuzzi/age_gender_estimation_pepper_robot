@@ -4,11 +4,10 @@ import shutil
 import csv
 
 home_path = os.path.dirname(__file__)
-# local path to downloaded Adience dataset, i.e. source directories
-dataset_path = "/Users/maggieliuzzi/NeuralNetworks/Adience/"
-csv_path = os.path.join(dataset_path, "data.csv")
-# path to formatted dataset, i.e. destination directories
-form_dataset_path = os.path.join(home_path, "dataset_adience_gender/")
+# local path to data.csv in Adience dataset
+source_path = '/Users/maggieliuzzi/NeuralNetworks/Adience/'
+csv_path = os.path.join(source_path, "data.csv")
+dataset_path = os.path.join(home_path, "dataset_adience_gender/")
 
 train_path = os.path.join(dataset_path, "train")
 validate_path = os.path.join(dataset_path, "validate")
@@ -18,9 +17,7 @@ validate_path_0 = os.path.join(validate_path, "f")
 validate_path_1 = os.path.join(validate_path, "m")
 test_path_t = os.path.join(dataset_path, "test", "test")
 test_path = os.path.join(dataset_path, "test/")
-
-processed_paths = [train_path, validate_path, test_path, test_path_t]
-
+processed_paths = [train_path_0, train_path_1, validate_path_0, validate_path_1, test_path, test_path_t]
 
 for path in processed_paths:
     if not os.path.isdir(path):
