@@ -1,8 +1,19 @@
 import numpy as np
 import os
 import ssl
+import argparse
 
-# Ensures that Keras is using Theano as a back-end, then loads Keras
+parser = argparse.ArgumentParser(
+    description="Trains a convolutional neural network for detecting age using Adience.",
+    epilog="Created by Maria Liuzzi & Mitchell Clarke")
+parser.add_argument('--bucketsize', default=None, required=True,
+                    help="the age range of a single bucket in the prediction; required.")
+parser.add_argument('--epochs', default=1,
+                    help="the number of epochs to train the network for.")
+args = parser.parse_args()
+bucket_size = int(args.bucketsize)
+
+# Ensures Keras is using Theano as a back-end, then loads Keras
 keras_path = os.path.join(os.path.expanduser('~'), '.keras')
 keras_json_path = os.path.join(keras_path, 'keras.json')
 if not os.path.isdir(keras_path):
@@ -14,6 +25,7 @@ with open(keras_json_path, 'w') as kf:
 from keras.applications.mobilenetv2 import MobileNetV2
 from keras import models, layers
 from keras.preprocessing.image import ImageDataGenerator
+
 
 '''
 +-----------------------+
@@ -44,16 +56,14 @@ BatchNormalization
 Structure described here: http://machinethink.net/blog/mobilenet-v2/
 
 The final Conv2D layer and onwards are the target of re-training
-The final Dense layer is replaced with a new one of size (2) for classifying male and female
 '''
 
-np.random.seed(3)
+np.random.seed(1337)
 
-# Define useful filepaths for later
-home_path = "/Users/maggieliuzzi/agerecognition/" # home_path = os.path.dirname(__file__)
-train_path = os.path.join(home_path, "dataset_adience_age_15y/train")
-validate_path = os.path.join(home_path, "dataset_adience_age_15y/validate")
-test_path = os.path.join(home_path, "dataset_adience_age_15y/test")
+home_path = os.path.dirname(__file__)
+train_path = os.path.join(home_path, "dataset_adience_age_"+str(bucket_size)+"y/train")
+validate_path = os.path.join(home_path, "dataset_adience_age_"+str(bucket_size)+"y/validate")
+test_path = os.path.join(home_path, "dataset_adience_age_"+str(bucket_size)+"y/test")
 
 # Download MobileNetV2 without its classifier and freeze all but the last 4 layers
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -61,9 +71,10 @@ model_mobile = MobileNetV2(weights='imagenet', input_shape=(224, 224, 3), includ
 for layer in model_mobile.layers[:-4]:
     layer.trainable = False
 
+# Build the new model
 model_new = models.Sequential()
 model_new.add(model_mobile)
-model_new.add(layers.Dense(4, activation='softmax'))
+model_new.add(layers.Dense(int(60/bucket_size), activation='softmax'))
 model_new.summary()
 
 # Define the data generators, including random data transforms as it is being input
@@ -83,6 +94,6 @@ model_new.compile(optimizer='rmsprop',
 print(train_generator)
 print(validate_generator)
 
-model_new.fit_generator(train_generator, epochs=2, steps_per_epoch=len(train_generator), verbose=1,
+model_new.fit_generator(train_generator, epochs=int(args.epochs), steps_per_epoch=len(train_generator), verbose=1,
                         validation_data=validate_generator, validation_steps=len(validate_generator))
-model_new.save('final_model_adience_age_15y.h5')
+model_new.save('final_model_adience_age_'+str(bucket_size)+'.h5')
