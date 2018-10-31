@@ -1,30 +1,79 @@
+import timeit
+import random
 from magic_profiler.utils import warning, error
 
 class Labels:
     def __init__(self):
         self.labels = []
-        self.properties = {
-            "base_dir": "",
-            "source_key": "",
-            "target_key": ""
-        }
+        self.removed = []
+        #self.properties = {
+        #    "base_dir": "",
+        #    "source_key": "",
+        #    "target_key": ""
+        #}
+
+    def add(self, label):
+        try:
+            self.labels.append(label)
+        except Exception as e:
+            warning("Could not add new label to Labels object; "+str(e))
     
-    def set_properties(self, properties):
-        if isinstance(properties, dict):
-            for key, value in properties.iteritems():
-                if key in self.properties:
-                    self.properties[key] = value
+    def adds(self, labels=[]):
+        try:
+            for label in labels:
+                self.add(label)
+        except Exception as e:
+            warning("Could not add new labels to Label object; "+str(e))
+
+    def filter(self, key, lessthan=None, greaterthan=None):
+        try:
+            new_labels = []
+            for label in self.labels:
+                if (lessthan and label[key]<lessthan) or (greaterthan and label[key]>greaterthan):
+                    self.removed.append(label)
                 else:
-                    warning("Could not update '"+str(key)+"'. It is not a valid property.")
-        else:
-            warning("Could not update properties. Input should be a dictionary.")
-
-    def add_label(self, label):
-        print("Adding a label.")
+                    new_labels.append(label)
+            self.labels = new_labels
+        except Exception as e:
+            warning("Could not filter labels in Label object; "+str(e))
     
-    def add_labels(self, labels):
-        print("Adding lots of labels.")        
+    def shuffle(self):
+        random.shuffle(self.labels)
 
+    def upsample(self):
+        print("Upsampling")
+    
+    def downsample(self):
+        print("Downsampling")
+    
+    def assign(self):
+        print("Assigning roles")
+    
+    def 
+
+    # def config(self, properties):
+    #    try:
+    #        for key, value in properties.iteritems():
+    #            if key in self.properties:
+    #                self.properties[key] = value
+    #            else:
+    #                warning("'"+str(key)+"' is not a property of Labels.")
+    #    except Exception as e:
+    #        warning("Could not update properties of Labels object; "+str(e))
+
+dummydata = [
+    {'name': 'Mitchell','age': 25,'gender': 'male', 'score': 9, 'filepath':'54/m1.jpg'},
+    {'name': 'Anthony','age': 19,'gender': 'male', 'score': 4, 'filepath':'15/a1.jpg'},
+    {'name': 'Diana','age': 24,'gender': 'female', 'score': 7, 'filepath':'73/d1.jpg'},
+    {'name': 'Sarah','age': 37,'gender': 'female', 'score': 8, 'filepath':'9/s1.jpg'},
+    {'name': 'Joshua','age': 50,'gender': 'male', 'score': 8, 'filepath':'23/j1.jpg'},
+    {'name': 'Kane','age': 21,'gender': 'male', 'score': 7, 'filepath':'5/k1.jpg'},
+    {'name': 'Erika','age': 30,'gender': 'female', 'score': 10, 'filepath':'49/e1.jpg'}
+]
+
+start = timeit.default_timer()
 mylabels = Labels()
-mylabels.set_properties({'target_key':'gender','source_key':'source','whatever':'anything'})
-print(mylabels.properties)
+mylabels.adds(dummydata)
+end = timeit.default_timer()
+
+print(end - start)
