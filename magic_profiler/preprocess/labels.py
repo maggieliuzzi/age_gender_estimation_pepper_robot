@@ -1,6 +1,4 @@
-import timeit
-import random
-from magic_profiler.utils import warning, error
+from magic_profiler.utils import warning, error, timer
 
 class Labels:
     def __init__(self):
@@ -17,6 +15,9 @@ class Labels:
             self.labels.append(label)
         except Exception as e:
             warning("Could not add new label to Labels object; "+str(e))
+            return False
+        else:
+            return True
     
     def adds(self, labels=[]):
         try:
@@ -24,32 +25,72 @@ class Labels:
                 self.add(label)
         except Exception as e:
             warning("Could not add new labels to Label object; "+str(e))
+            return False
+        else:
+            return True
 
-    def filter(self, key, lessthan=None, greaterthan=None):
+    def filter(self, filter_key, lessthan=None, greaterthan=None):
         try:
             new_labels = []
             for label in self.labels:
-                if (lessthan and label[key]<lessthan) or (greaterthan and label[key]>greaterthan):
+                if (lessthan and label[filter_key]<lessthan) or (greaterthan and label[filter_key]>greaterthan):
                     self.removed.append(label)
                 else:
                     new_labels.append(label)
             self.labels = new_labels
         except Exception as e:
             warning("Could not filter labels in Label object; "+str(e))
+            return False
+        else:
+            return True
     
     def shuffle(self):
-        random.shuffle(self.labels)
+        try:
+            import random
+            random.shuffle(self.labels)
+        except Exception as e:
+            warning("Could not shuffle labels in Label object; "+str(e))
+            return False
+        else:
+            return True
 
-    def upsample(self):
-        print("Upsampling")
+    def sort(self, class_key, target_classes={}):
+        try:
+            classes = {}
+            for i in range(0, len(self.labels)):
+                label_class = self.labels[i][class_key]
+                if label_class not in classes and (label_class in target_classes or target_classes == {}):
+                    classes[label_class] = []
+                classes[label_class].append(i)
+        except Exception as e:
+            warning("Could not sort labels by class name; "+str(e))
+            return {}
+        else:
+            return classes
+    
+    def count(self, class_key, target_classes={}, include_sort=False):
+        try:
+            classes = self.sort(class_key, target_classes)
+            class_count = {}
+            for key, value in classes.iteritems():
+                if include_sort:
+                    class_count[key] = (value, len(value))
+                else:
+                    class_count[key] = len(value)
+        except Exception as e:
+            warning("Could not count labels in each class; "+str(e))
+            return {}
+        else:
+            return class_count
+        
+    def upsample(self, class_key, target_classes={}):
+        print("Upsampling...")
     
     def downsample(self):
-        print("Downsampling")
+        print("Downsampling...")
     
     def assign(self):
-        print("Assigning roles")
-    
-    def 
+        print("Assigning roles...")
 
     # def config(self, properties):
     #    try:
@@ -61,6 +102,7 @@ class Labels:
     #    except Exception as e:
     #        warning("Could not update properties of Labels object; "+str(e))
 
+
 dummydata = [
     {'name': 'Mitchell','age': 25,'gender': 'male', 'score': 9, 'filepath':'54/m1.jpg'},
     {'name': 'Anthony','age': 19,'gender': 'male', 'score': 4, 'filepath':'15/a1.jpg'},
@@ -68,12 +110,15 @@ dummydata = [
     {'name': 'Sarah','age': 37,'gender': 'female', 'score': 8, 'filepath':'9/s1.jpg'},
     {'name': 'Joshua','age': 50,'gender': 'male', 'score': 8, 'filepath':'23/j1.jpg'},
     {'name': 'Kane','age': 21,'gender': 'male', 'score': 7, 'filepath':'5/k1.jpg'},
-    {'name': 'Erika','age': 30,'gender': 'female', 'score': 10, 'filepath':'49/e1.jpg'}
+    {'name': 'Erika','age': 30,'gender': 'female', 'score': 10, 'filepath':'49/e1.jpg'},
+    {'name': 'Adrian','age': 24,'gender': 'other', 'score': 7, 'filepath':'66/a1.jpg'}
 ]
 
-start = timeit.default_timer()
-mylabels = Labels()
-mylabels.adds(dummydata)
-end = timeit.default_timer()
+def main():
+    mylabels = Labels()
+    mylabels.adds(dummydata)
+    print(mylabels.count("gender",include_sort=True))
+    mylabels.filter("score",lessthan=8)
+    print(mylabels.count("gender",include_sort=True))
 
-print(end - start)
+timer(main)
