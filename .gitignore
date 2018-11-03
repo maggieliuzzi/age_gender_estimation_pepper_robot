@@ -26,6 +26,3 @@ Comparable_Models/
 # Models
 *.hdf5
 *.h5
-
-# Node Modules
-node_modules/
