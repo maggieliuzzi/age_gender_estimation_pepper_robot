@@ -54,39 +54,54 @@ class Labels:
         else:
             return True
 
-    def sort(self, class_key, target_classes={}):
+    def sort(self, class_key, target_classes=[]):
         try:
             classes = {}
             for i in range(0, len(self.labels)):
                 label_class = self.labels[i][class_key]
-                if label_class not in classes and (label_class in target_classes or target_classes == {}):
-                    classes[label_class] = []
-                classes[label_class].append(i)
+                if label_class in target_classes or target_classes == []:
+                    if label_class not in classes:
+                        classes[label_class] = []
+                    classes[label_class].append(i)
         except Exception as e:
             warning("Could not sort labels by class name; "+str(e))
             return {}
         else:
             return classes
     
-    def count(self, class_key, target_classes={}, include_sort=False):
+
+    def count(self, class_key, target_classes=[]):
         try:
-            classes = self.sort(class_key, target_classes)
             class_count = {}
-            for key, value in classes.iteritems():
-                if include_sort:
-                    class_count[key] = (value, len(value))
-                else:
-                    class_count[key] = len(value)
+            for i in range(0, len(self.labels)):
+                label_class = self.labels[i][class_key]
+                if label_class in target_classes or target_classes == []:
+                    if label_class not in class_count:
+                        class_count[label_class] = 0
+                    class_count[label_class] += 1
         except Exception as e:
-            warning("Could not count labels in each class; "+str(e))
+            warning("Could not count frequency of classes; "+str(e))
             return {}
         else:
             return class_count
-        
-    def upsample(self, class_key, target_classes={}):
-        print("Upsampling...")
     
-    def downsample(self):
+
+    def upsample(self, class_key, target_classes=[]):
+        count = self.count(class_key, target_classes)
+        sort = self.sort(class_key, target_classes)
+        max_amount = count[max(count, key=count.get)]
+        new_labels = []
+        for key, value in sort.iteritems():
+            if key in target_classes or target_classes==[]:
+                total_delta = max_amount - count[key]
+                full_sets = int(total_delta/count[key])
+                partial_set = total_delta - count[key]*full_sets
+                new_labels += value*full_sets + value[:partial_set]
+        for label in new_labels:
+            self.labels.append(self.labels[label])
+        return True
+    
+    def downsample(self, class_key, target_classes=[]):
         print("Downsampling...")
     
     def assign(self):
@@ -117,8 +132,7 @@ dummydata = [
 def main():
     mylabels = Labels()
     mylabels.adds(dummydata)
-    print(mylabels.count("gender",include_sort=True))
-    mylabels.filter("score",lessthan=8)
-    print(mylabels.count("gender",include_sort=True))
+    mylabels.upsample('score',target_classes=[4, 7])
+    print(mylabels.labels)
 
 timer(main)
