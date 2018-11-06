@@ -70,6 +70,7 @@ def predict():
 
     return flask.jsonify(data)
 
+
 # When this script is ran directly, prepare the model + server to take requests
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
