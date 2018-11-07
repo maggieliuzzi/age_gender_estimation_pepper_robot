@@ -17,11 +17,19 @@ if platform.system().lower() == 'windows':
     windll.kernel32.SetConsoleMode(c_int(stdout_handle), mode)
 # --------------------------------------------------------------------------
 
-def warning(msg):
-    termcolor.cprint(""+"Warning: "+str(msg)+"","yellow")
+def warning(msg, err=None):
+    if err:
+        m = "Warning: "+str(msg)+"; "+type(err).__name__+": "+str(err)
+    else:
+        m = "Warning: "+str(msg)+"."
+    termcolor.cprint(m, "yellow")
 
-def error(msg, exit_code=1):
-    termcolor.cprint(""+"Error: "+str(msg)+"","red")
+def error(msg, err=None, exit_code=1):
+    if err:
+        m = "Error: "+str(msg)+"; "+type(err).__name__+": "+str(err)
+    else:
+        m = "Error: "+str(msg)+"."
+    termcolor.cprint(m, "red")
     exit(exit_code)
 
 def timer(f, *args, **kwargs):
