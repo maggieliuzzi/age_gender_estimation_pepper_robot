@@ -1,19 +1,23 @@
+import clint.textui as cl
+import csv
+import math
+import os
+import random
+import scipy.io as sio
+
+import magic_profiler.preprocess.images as mpimg
 from magic_profiler.utils import warning, error, timer
 
 class Labels:
     def __init__(self):
         self.labels = []
         self.removed = []
-        #self.properties = {
-        #    "base_dir": "",
-        #    "source_key": "",
-        #    "target_key": ""
-        #}
 
     def add(self, label):
         try:
             new_label = dict(label)
-            new_label['_copy'] = 0
+            new_label["_role"] = None
+            new_label["_destination"] = None
             self.labels.append(new_label)
         except Exception as e:
             warning("Could not add new label to Labels object", e)
@@ -22,20 +26,26 @@ class Labels:
             return True
     
     def adds(self, labels=[]):
+        n = 0
         try:
+            print("Adding labels...")
             for label in labels:
                 self.add(label)
+                n += 1
         except Exception as e:
             warning("Could not add new labels to Label object", e)
             return False
         else:
+            print("Successfully added {} labels".format(n))
             return True
 
-    def filter(self, filter_key, lessthan=None, greaterthan=None):
+    def filter(self, filter_key, isin=None, isnotin=None, lessthan=None, greaterthan=None):
         try:
+            print("Filtering labels by {}...".format(filter_key))
             new_labels = []
             for label in self.labels:
-                if (lessthan and label[filter_key]<lessthan) or (greaterthan and label[filter_key]>greaterthan):
+                if (lessthan and label[filter_key]<lessthan) or (greaterthan and label[filter_key]>greaterthan
+                    or (isin and label[filter_key] in isin) or (isnotin and label[filter_key] not in isnotin)):
                     self.removed.append(label)
                 else:
                     new_labels.append(label)
@@ -44,16 +54,18 @@ class Labels:
             warning("Could not filter labels in Label object", e)
             return False
         else:
+            print("Successfully filtered labels. {} labels remain.".format(len(self.labels)))
             return True
     
     def shuffle(self):
         try:
-            import random
+            print("Shuffling order of labels...")
             random.shuffle(self.labels)
         except Exception as e:
             warning("Could not shuffle labels in Label object", e)
             return False
         else:
+            print("Successfully shuffled {} labels.".format(len(self.labels)))
             return True
 
     def sort(self, class_key, target_classes=[]):
@@ -71,7 +83,6 @@ class Labels:
         else:
             return classes
     
-
     def count(self, class_key, target_classes=[]):
         try:
             class_count = {}
@@ -87,9 +98,9 @@ class Labels:
         else:
             return class_count
     
-
     def upsample(self, class_key, target_classes=[]):
         try:
+            print("Upsampling labels by {}...".format(class_key))
             count = self.count(class_key, target_classes)
             sort = self.sort(class_key, target_classes)
             max_amount = count[max(count, key=count.get)]
@@ -106,11 +117,12 @@ class Labels:
             warning("Could not upsample labels", e)
             return False
         else:
+            print("Labels upsampled successfully. Total labels is {}.".format(len(self.labels)))
             return True
-
 
     def downsample(self, class_key, target_classes=[]):
         try:
+            print("Downsampling labels by {}...".format(class_key))
             count = self.count(class_key, target_classes)
             sort = self.sort(class_key, target_classes)
             min_amount = count[min(count, key=count.get)]
@@ -130,38 +142,109 @@ class Labels:
             warning("Could not downsample labels", e)
             return False
         else:
+            print("Labels downsampled successfully. {} labels remain.".format(len(self.labels)))
             return True
-    
 
-    # def config(self, properties):
-    #    try:
-    #        for key, value in properties.iteritems():
-    #            if key in self.properties:
-    #                self.properties[key] = value
-    #            else:
-    #                warning("'"+str(key)+"' is not a property of Labels.")
-    #    except Exception as e:
-    #        warning("Could not update properties of Labels object")
+    def assign(self, training=0.65, validation=0.10):
+        try:
+            if training+validation<1:
+                images = len(self.labels)
+                train_images = int(math.floor(images*training))
+                validate_images = int(math.floor(images*validation))
+                print("Assigning roles to labels: {} training; {} validation; {} testing]...".format(train_images, validate_images, images-(train_images+validate_images)))
+                for i in range(0, train_images):
+                    self.labels[i]["_role"] = "train"
+                for i in range(train_images, train_images+validate_images):
+                    self.labels[i]["_role"] = "validate"
+                for i in range(train_images+validate_images, images):
+                    self.labels[i]["_role"] = "test"
+            else:
+                warning("Could not assign roles to labels. Training + validation should be < 1")
+        except Exception as e:
+            warning("Could not assign roles to labels", e)
+            return False
+        else:
+            print("Roles assigned successfully to {} labels.".format(len(self.labels)))
+            return True
 
+    def process(self, class_key, source_base, source_key, destination_base):
+        try:
+            bar_current = 0
+            bar_end = len(self.labels)
+            print("Processing labels to generate dataset...")
+            with cl.progress.Bar(expected_size=bar_end) as bar:
+                for i in range(0, bar_end):
+                    copy = 0
+                    source_path = os.path.join(source_base, self.labels[i][source_key])
+                    while copy < 1000:
+                        file_name, file_ext = os.path.splitext(os.path.basename(source_path))
+                        destination_cont = os.path.join(str(self.labels[i]["_role"]), str(self.labels[i][class_key]), file_name+"_"+str(copy)+file_ext)
+                        destination_path = os.path.join(destination_base, destination_cont)
+                        if not os.path.isfile(destination_path):
+                            self.labels[i]["_destination"] = destination_cont
+                            img = mpimg.load_image(source_path)
+                            img = mpimg.apply_filter(img)
+                            mpimg.save_image(img, destination_path)
+                            break
+                        else:
+                            copy += 1
+                    bar_current += 1
+                    bar.show(bar_current)
+        except Exception as e:
+            warning("Could not generate dataset from labels", e)
+            return False
+        else:
+            print("Dataset of {} images generated successfully.".format(len(self.labels)))
+            return True
 
-dummydata = [
-    {'name': 'Mitchell','age': 25,'gender': 'male', 'score': 9, 'filepath':'54/m1.jpg'},
-    {'name': 'Anthony','age': 19,'gender': 'male', 'score': 4, 'filepath':'15/a1.jpg'},
-    {'name': 'Diana','age': 24,'gender': 'female', 'score': 7, 'filepath':'73/d1.jpg'},
-    {'name': 'Sarah','age': 37,'gender': 'female', 'score': 8, 'filepath':'9/s1.jpg'},
-    {'name': 'Joshua','age': 50,'gender': 'male', 'score': 8, 'filepath':'23/j1.jpg'},
-    {'name': 'Kane','age': 21,'gender': 'male', 'score': 7, 'filepath':'5/k1.jpg'},
-    {'name': 'William', 'age': 41, 'gender': 'male', 'score': 9, 'filepath':'30/w1.jpg'},
-    {'name': 'Erika','age': 30,'gender': 'female', 'score': 10, 'filepath':'49/e1.jpg'},
-    {'name': 'Adrian','age': 24,'gender': 'other', 'score': 7, 'filepath':'66/a1.jpg'}
-]
+    def export_csv(self, destination):
+        try:
+            print("Writing labels to file...".format(destination))
+            with open(destination,'wb') as f:
+                k = self.labels[0].keys()
+                w = csv.DictWriter(f, k)
+                w.writerow({str(k_): k_ for k_ in k})
+                w.writerows(self.labels)
+        except Exception as e:
+            warning("Could not save labels to file", e)
+        else:
+            print("Labels saved successfully at {}".format(len(self.labels)))
+        
+    def import_csv(self):
+        pass
+
+# ------------------------------------------
+# ------------------------------------------
+# ------------------------------------------
 
 def main():
+    mat_file = sio.loadmat("D:\\Dev\\wiki.mat")['wiki'][0][0]
+    mat_labels = [{
+        "dob": mat_file[0][0][i],
+        "date": mat_file[1][0][i],
+        "source": mat_file[2][0][i][0],
+        "gender": mat_file[3][0][i],
+        "first_score": mat_file[6][0][i],
+        "second_score": mat_file[7][0][i]
+    } for i in range(0, len(mat_file[0][0]))]
+
     mylabels = Labels()
-    mylabels.adds(dummydata)
-    mylabels.filter('score',lessthan=7)
+    mylabels.adds(mat_labels)
+    print("")
+
+    mylabels.filter('gender',isnotin=[0.0,1.0])
+    mylabels.filter('first_score',lessthan=6)
+    print("")
+    
+    print("Count: "+str(mylabels.count('gender')))
+    mylabels.upsample('gender')
+    print("Count: "+str(mylabels.count('gender')))
+    print("")
+    
     mylabels.shuffle()
-    mylabels.downsample('gender')
-    print(str(mylabels.labels))
+    mylabels.assign(training=0.65, validation=0.15)
+    mylabels.process('gender', 'D:\\Dev\\wiki_crop\\wiki_crop', 'source', 'D:\\Dev\\magic_profiler\\data\\dataset')
+    mylabels.export_csv('D:\\Dev\\magic_profiler\\data\\labels.csv')
     
 timer(main)
+exit(0)
