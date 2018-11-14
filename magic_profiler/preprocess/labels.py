@@ -215,14 +215,25 @@ class Labels:
         else:
             print("Labels loaded successfully from {}.".format(source))
 
-    def bin():
+    def bin(self):
         pass
 
-    def remove():
+    def remove(self, n):
         pass
     
-    def restore():
+    def restore(self):
         pass
     
-    def reset():
-        pass
+    def reset(self):
+    try:
+        print("Resetting Labels object.")
+        self.labels = None
+        self.removed = None
+    except Exception as e:
+        warning("Could not reset Labels object;", e)
+        return False
+    else:
+        print("Successfully reset Labels object.")
+        return True
+    
+    # EXPAND THE INITIAL OBJECT INIT TO ALLOW FOR PRE-LOADING OF IMAGES

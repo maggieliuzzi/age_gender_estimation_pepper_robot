@@ -13,7 +13,7 @@ mat_labels = [{
 
 labels = mpl.Labels()
 labels.adds(mat_labels)
-labels.filter("first_score", lessthan=4)
+labels.filter("first_score", lessthan=5.5)
 labels.filter("second_score", greaterthan=0)
 labels.filter("gender", isnotin=[0.0, 1.0])
 labels.assign()
