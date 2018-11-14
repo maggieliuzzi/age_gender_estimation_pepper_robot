@@ -36,7 +36,7 @@ class Labels:
             warning("Could not add new labels to Label object", e)
             return False
         else:
-            print("Successfully added {} labels".format(n))
+            print("Successfully added {} labels.".format(n))
             return True
 
     def filter(self, filter_key, isin=None, isnotin=None, lessthan=None, greaterthan=None):
@@ -210,7 +210,8 @@ class Labels:
             print("Loading labels from file...")
             with open(source,'r') as f:
                 w = csv.DictReader(f)
-                self.labels = [row for row in w]
+                imported_labels = [row for row in w]
+                self.adds(imported_labels)
         except Exception as e:
             warning("Could not load labels from file", e)
         else:
@@ -219,47 +220,11 @@ class Labels:
     def bin():
         pass
 
-
-# ------------------------------------------
-# ------------------------------------------
-# ------------------------------------------
-
-def main():
-    '''
-    mat_file = sio.loadmat("D:\\Dev\\wiki.mat")['wiki'][0][0]
-    mat_labels = [{
-        "dob": mat_file[0][0][i],
-        "date": mat_file[1][0][i],
-        "source": mat_file[2][0][i][0],
-        "gender": mat_file[3][0][i],
-        "first_score": mat_file[6][0][i],
-        "second_score": mat_file[7][0][i]
-    } for i in range(0, len(mat_file[0][0]))]
-    '''
-
-    mylabels = Labels()
-    mylabels.import_csv('D:\\Dev\\magic_profiler\\data\\labels.csv')
-    mylabels.process('gender', 'D:\\Dev\\wiki_crop\\wiki_crop', 'source', 'D:\\Dev\\magic_profiler\\data\\dataset')
+    def remove():
+        pass
     
-    '''
-    mylabels = Labels()
-    mylabels.adds(mat_labels)
-    print("")
-
-    mylabels.filter('gender',isnotin=[0.0,1.0])
-    mylabels.filter('first_score',lessthan=6)
-    print("")
+    def restore():
+        pass
     
-    print("Count: "+str(mylabels.count('gender')))
-    mylabels.upsample('gender')
-    print("Count: "+str(mylabels.count('gender')))
-    print("")
-    
-    mylabels.shuffle()
-    mylabels.assign(training=0.65, validation=0.15)
-    mylabels.process('gender', 'D:\\Dev\\wiki_crop\\wiki_crop', 'source', 'D:\\Dev\\magic_profiler\\data\\dataset')
-    mylabels.export_csv('D:\\Dev\\magic_profiler\\data\\labels.csv')
-    '''
-    
-timer(main)
-exit(0)
+    def reset():
+        pass
