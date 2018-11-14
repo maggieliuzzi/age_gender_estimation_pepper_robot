@@ -167,39 +167,34 @@ class Labels:
             print("Roles assigned successfully to {} labels.".format(len(self.labels)))
             return True
 
-    def process(self, class_key, source_base, source_key, destination_base):
-        try:
-            bar_current = 0
-            bar_end = len(self.labels)
-            print("Processing labels to generate dataset...")
-            with cl.progress.Bar(expected_size=bar_end) as bar:
-                for i in range(0, bar_end):
-                    copy = 0
-                    source_path = os.path.join(source_base, self.labels[i][source_key])
-                    while copy < 1000:
-                        file_name, file_ext = os.path.splitext(os.path.basename(source_path))
-                        destination_cont = os.path.join(str(self.labels[i]["_role"]), str(self.labels[i][class_key]), file_name+"_"+str(copy)+file_ext)
-                        destination_path = os.path.join(destination_base, destination_cont)
-                        if not os.path.isfile(destination_path):
-                            self.labels[i]["_destination"] = destination_cont
-                            img = mpimg.load_image(source_path)
-                            img = mpimg.apply_filter(img)
-                            mpimg.save_image(img, destination_path)
-                            break
-                        else:
-                            copy += 1
-                    bar_current += 1
-                    bar.show(bar_current)
-        except Exception as e:
-            warning("Could not generate dataset from labels", e)
-            return False
-        else:
-            print("Dataset of {} images generated successfully.".format(len(self.labels)))
-            return True
+    def process(self, class_key, source_base, source_key, destination_base, filter_noise=0, filter_contrast=(0,100)):
+        bar_current = 0
+        bar_end = len(self.labels)
+        print("Processing labels to generate dataset...")
+        with cl.progress.Bar(expected_size=bar_end) as bar:
+            for i in range(0, bar_end):
+                copy = 0
+                source_path = os.path.join(source_base, self.labels[i][source_key])
+                while copy < 1000:
+                    file_name, file_ext = os.path.splitext(os.path.basename(source_path))
+                    destination_cont = os.path.join(str(self.labels[i]["_role"]), str(self.labels[i][class_key]), file_name+"_"+str(copy)+file_ext)
+                    destination_path = os.path.join(destination_base, destination_cont)
+                    if not os.path.isfile(destination_path):
+                        self.labels[i]["_destination"] = destination_cont
+                        img = mpimg.load_image(source_path)
+                        img = mpimg.apply_filter(img, filter_noise, filter_contrast)
+                        mpimg.save_image(img, destination_path)
+                        break
+                    else:
+                        copy += 1
+                bar_current += 1
+                bar.show(bar_current)
+        print("Dataset of {} images generated successfully.".format(len(self.labels)))
+        return True
 
     def export_csv(self, destination):
         try:
-            print("Writing labels to file...".format(destination))
+            print("Writing labels to file...")
             with open(destination,'wb') as f:
                 k = self.labels[0].keys()
                 w = csv.DictWriter(f, k)
@@ -208,16 +203,29 @@ class Labels:
         except Exception as e:
             warning("Could not save labels to file", e)
         else:
-            print("Labels saved successfully at {}".format(len(self.labels)))
+            print("Labels saved successfully at {}.".format(destination))
         
-    def import_csv(self):
+    def import_csv(self, source):
+        try:
+            print("Loading labels from file...")
+            with open(source,'r') as f:
+                w = csv.DictReader(f)
+                self.labels = [row for row in w]
+        except Exception as e:
+            warning("Could not load labels from file", e)
+        else:
+            print("Labels loaded successfully from {}.".format(source))
+
+    def bin():
         pass
+
 
 # ------------------------------------------
 # ------------------------------------------
 # ------------------------------------------
 
 def main():
+    '''
     mat_file = sio.loadmat("D:\\Dev\\wiki.mat")['wiki'][0][0]
     mat_labels = [{
         "dob": mat_file[0][0][i],
@@ -227,7 +235,13 @@ def main():
         "first_score": mat_file[6][0][i],
         "second_score": mat_file[7][0][i]
     } for i in range(0, len(mat_file[0][0]))]
+    '''
 
+    mylabels = Labels()
+    mylabels.import_csv('D:\\Dev\\magic_profiler\\data\\labels.csv')
+    mylabels.process('gender', 'D:\\Dev\\wiki_crop\\wiki_crop', 'source', 'D:\\Dev\\magic_profiler\\data\\dataset')
+    
+    '''
     mylabels = Labels()
     mylabels.adds(mat_labels)
     print("")
@@ -245,6 +259,7 @@ def main():
     mylabels.assign(training=0.65, validation=0.15)
     mylabels.process('gender', 'D:\\Dev\\wiki_crop\\wiki_crop', 'source', 'D:\\Dev\\magic_profiler\\data\\dataset')
     mylabels.export_csv('D:\\Dev\\magic_profiler\\data\\labels.csv')
+    '''
     
 timer(main)
 exit(0)

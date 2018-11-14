@@ -22,12 +22,12 @@ def load_image(sourcepath):
     else:
         return img
 
-def apply_filter(img, noise=0.001, contrast=(15,80)):
+def apply_filter(img, noise=0, contrast=(0,100)):
     # For no added noise and/or contrast: noise=0, constrast(0,100)
     # Applies filters to array
-    plow, phigh = np.percentile(img, (10, 82))
+    plow, phigh = np.percentile(img, contrast)
     img = skiexposure.rescale_intensity(img, in_range=(plow, phigh))
-    img = skiutil.random_noise(img, var=0.005)
+    img = skiutil.random_noise(img, var=noise)
     return img
 
 def save_image(img, destpath):
