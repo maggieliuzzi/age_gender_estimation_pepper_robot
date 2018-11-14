@@ -3,7 +3,6 @@ import csv
 import math
 import os
 import random
-import scipy.io as sio
 
 import magic_profiler.preprocess.images as mpimg
 from magic_profiler.utils import warning, error, timer
@@ -44,8 +43,7 @@ class Labels:
             print("Filtering labels by {}...".format(filter_key))
             new_labels = []
             for label in self.labels:
-                if (lessthan and label[filter_key]<lessthan) or (greaterthan and label[filter_key]>greaterthan
-                    or (isin and label[filter_key] in isin) or (isnotin and label[filter_key] not in isnotin)):
+                if (lessthan != None and label[filter_key]<lessthan) or (greaterthan != None and label[filter_key]>greaterthan) or (isin != None and label[filter_key] in isin) or (isnotin != None and label[filter_key] not in isnotin):
                     self.removed.append(label)
                 else:
                     new_labels.append(label)
@@ -203,7 +201,7 @@ class Labels:
         except Exception as e:
             warning("Could not save labels to file", e)
         else:
-            print("Labels saved successfully at {}.".format(destination))
+            print("Labels saved successfully to {}.".format(destination))
         
     def import_csv(self, source):
         try:
