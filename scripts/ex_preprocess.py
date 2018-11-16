@@ -27,12 +27,12 @@ mat_labels = [{
 labels = mpl.Labels(mat_labels, verbose=1)
 
 # Filter out unwanted images
-labels.filter("first_score", lessthan=6)
+labels.filter("first_score", lessthan=3)
 labels.filter("second_score", greaterthan=0)
 labels.filter("gender", isnotin=[0.0, 1.0])
 
 # Bin the score
-labels.bin('first_score', 6, 10, 0.5)
+labels.bin('first_score', 3, 9, 1)
 
 # Upsample the labels to even out the genders
 labels.upsample('gender')
