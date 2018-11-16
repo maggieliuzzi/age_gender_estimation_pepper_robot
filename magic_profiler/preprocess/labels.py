@@ -7,12 +7,38 @@ import random
 import magic_profiler.preprocess.images as mpimg
 from magic_profiler.utils import warning, error, timer
 
+# TO DO:
+# * Adding catches for using functions without any labels loaded
+# * Improved error checking with specific messages
+# * Adding comments + docstrings
+# * Number <-> category functions
+# * Stratified sampling
+# * General optimization
+
 class Labels:
-    def __init__(self):
+    def __init__(self, labels=None, verbose=0):
+        say("Creating new Labels object...")
         self.labels = []
         self.removed = []
+        self.verbose = verbose
+        if labels:
+            if isinstance(labels, list):
+                self.adds(labels)
+            elif os.path.isfile(labels):
+                self.import_csv(labels)
+            else:
+                warning("Could not add labels to new Label object", e)
+        say("New Labels object created successfully.")
+
+
+    def say(self, m):
+        '''Prints a message if self.verbose is > 0'''
+        if self.verbose>0:
+            print(m)
+
 
     def add(self, label):
+        '''Adds a dictionary to the list of labels'''
         try:
             new_label = dict(label)
             new_label["_role"] = None
@@ -25,9 +51,10 @@ class Labels:
             return True
     
     def adds(self, labels=[]):
+        '''Adds a list of multiple dictionaries to the list of labels'''
         n = 0
         try:
-            print("Adding labels...")
+            say("Adding labels...")
             for label in labels:
                 self.add(label)
                 n += 1
@@ -35,15 +62,21 @@ class Labels:
             warning("Could not add new labels to Label object", e)
             return False
         else:
-            print("Successfully added {} labels.".format(n))
+            say("Successfully added {} labels.".format(n))
             return True
 
     def filter(self, filter_key, isin=None, isnotin=None, lessthan=None, greaterthan=None):
+        '''Filters out labels which satisfies the specified critiera'''
         try:
-            print("Filtering labels by {}...".format(filter_key))
+            say("Filtering labels by {}...".format(filter_key))
             new_labels = []
             for label in self.labels:
-                if (lessthan != None and label[filter_key]<lessthan) or (greaterthan != None and label[filter_key]>greaterthan) or (isin != None and label[filter_key] in isin) or (isnotin != None and label[filter_key] not in isnotin):
+                if (
+                    (lessthan != None and label[filter_key]<lessthan) or 
+                    (greaterthan != None and label[filter_key]>greaterthan) or 
+                    (isin != None and label[filter_key] in isin) or 
+                    (isnotin != None and label[filter_key] not in isnotin)
+                   ):
                     self.removed.append(label)
                 else:
                     new_labels.append(label)
@@ -52,21 +85,23 @@ class Labels:
             warning("Could not filter labels in Label object", e)
             return False
         else:
-            print("Successfully filtered labels. {} labels remain.".format(len(self.labels)))
+            say("Successfully filtered labels. {} labels remain.".format(len(self.labels)))
             return True
     
     def shuffle(self):
+        '''Shuffles the order of the labels'''
         try:
-            print("Shuffling order of labels...")
+            say("Shuffling order of labels...")
             random.shuffle(self.labels)
         except Exception as e:
             warning("Could not shuffle labels in Label object", e)
             return False
         else:
-            print("Successfully shuffled {} labels.".format(len(self.labels)))
+            say("Successfully shuffled {} labels.".format(len(self.labels)))
             return True
 
     def sort(self, class_key, target_classes=[]):
+        '''Returns the indexes of all labels belonging to each class'''
         try:
             classes = {}
             for i in range(0, len(self.labels)):
@@ -82,6 +117,7 @@ class Labels:
             return classes
     
     def count(self, class_key, target_classes=[]):
+        '''Returns the number of labels belonging to each class'''
         try:
             class_count = {}
             for i in range(0, len(self.labels)):
@@ -97,8 +133,9 @@ class Labels:
             return class_count
     
     def upsample(self, class_key, target_classes=[]):
+        '''Upsamples by duplicating labels, to achieve an equal number of each class'''
         try:
-            print("Upsampling labels by {}...".format(class_key))
+            say("Upsampling labels by {}...".format(class_key))
             count = self.count(class_key, target_classes)
             sort = self.sort(class_key, target_classes)
             max_amount = count[max(count, key=count.get)]
@@ -115,12 +152,13 @@ class Labels:
             warning("Could not upsample labels", e)
             return False
         else:
-            print("Labels upsampled successfully. Total labels is {}.".format(len(self.labels)))
+            say("Labels upsampled successfully. Total labels is {}.".format(len(self.labels)))
             return True
 
     def downsample(self, class_key, target_classes=[]):
+        '''Downsamples by removing labels, to achieve an equal number of each class'''
         try:
-            print("Downsampling labels by {}...".format(class_key))
+            say("Downsampling labels by {}...".format(class_key))
             count = self.count(class_key, target_classes)
             sort = self.sort(class_key, target_classes)
             min_amount = count[min(count, key=count.get)]
@@ -140,16 +178,17 @@ class Labels:
             warning("Could not downsample labels", e)
             return False
         else:
-            print("Labels downsampled successfully. {} labels remain.".format(len(self.labels)))
+            say("Labels downsampled successfully. {} labels remain.".format(len(self.labels)))
             return True
 
     def assign(self, training=0.65, validation=0.10):
+        '''Assigns all labels with training, validation an testing roles'''
         try:
             if training+validation<1:
                 images = len(self.labels)
                 train_images = int(math.floor(images*training))
                 validate_images = int(math.floor(images*validation))
-                print("Assigning roles to labels: {} training; {} validation; {} testing]...".format(train_images, validate_images, images-(train_images+validate_images)))
+                say("Assigning roles to labels: {} training; {} validation; {} testing...".format(train_images, validate_images, images-(train_images+validate_images)))
                 for i in range(0, train_images):
                     self.labels[i]["_role"] = "train"
                 for i in range(train_images, train_images+validate_images):
@@ -162,13 +201,14 @@ class Labels:
             warning("Could not assign roles to labels", e)
             return False
         else:
-            print("Roles assigned successfully to {} labels.".format(len(self.labels)))
+            say("Roles assigned successfully to {} labels.".format(len(self.labels)))
             return True
 
     def process(self, class_key, source_base, source_key, destination_base, filter_noise=0, filter_contrast=(0,100)):
+        '''Loads, processes (including image filtering) and saves the corresponding images for each label'''
         bar_current = 0
         bar_end = len(self.labels)
-        print("Processing labels to generate dataset...")
+        say("Processing labels to generate dataset...")
         with cl.progress.Bar(expected_size=bar_end) as bar:
             for i in range(0, bar_end):
                 copy = 0
@@ -187,12 +227,13 @@ class Labels:
                         copy += 1
                 bar_current += 1
                 bar.show(bar_current)
-        print("Dataset of {} images generated successfully.".format(len(self.labels)))
+        say("Dataset of {} images generated successfully.".format(len(self.labels)))
         return True
 
     def export_csv(self, destination):
+        '''Exports the list of labels as a csv file'''
         try:
-            print("Writing labels to file...")
+            say("Writing labels to file...")
             with open(destination,'wb') as f:
                 k = self.labels[0].keys()
                 w = csv.DictWriter(f, k)
@@ -201,11 +242,12 @@ class Labels:
         except Exception as e:
             warning("Could not save labels to file", e)
         else:
-            print("Labels saved successfully to {}.".format(destination))
+            say("Labels saved successfully to {}.".format(destination))
         
     def import_csv(self, source):
+        '''Imports a list of labels from a csv file'''
         try:
-            print("Loading labels from file...")
+            say("Loading labels from file...")
             with open(source,'r') as f:
                 w = csv.DictReader(f)
                 imported_labels = [row for row in w]
@@ -213,27 +255,51 @@ class Labels:
         except Exception as e:
             warning("Could not load labels from file", e)
         else:
-            print("Labels loaded successfully from {}.".format(source))
-
-    def bin(self):
-        pass
+            say("Labels loaded successfully from {}.".format(source))
 
     def remove(self, n):
-        pass
+        '''Removes labels from the list of labels'''
+        self.removed = self.labels[:n]
+        self.labels = self.labels[n:]
     
     def restore(self):
-        pass
+        '''Restores removed labels to the list of labels'''
+        self.adds(self.removed)
+        self.removed = None
     
     def reset(self):
-    try:
-        print("Resetting Labels object.")
-        self.labels = None
-        self.removed = None
-    except Exception as e:
-        warning("Could not reset Labels object;", e)
-        return False
-    else:
-        print("Successfully reset Labels object.")
-        return True
+        '''Empties the list of labels'''
+        try:
+            say("Resetting Labels object.")
+            self.labels = None
+            self.removed = None
+        except Exception as e:
+            warning("Could not reset Labels object", e)
+            return False
+        else:
+            say("Successfully reset Labels object.")
+            return True
     
-    # EXPAND THE INITIAL OBJECT INIT TO ALLOW FOR PRE-LOADING OF IMAGES
+    def bin(self, bin_key, mini, maxi, step):
+        '''Sorts labels into bins according to a numerical attribute'''
+        try:
+            say("Binning labels by {}...".format(bin_key))
+            binned_key = bin_key+"_bin"
+            for i in range(0,len(self.labels)):
+                value = float(self.labels[i][bin_key])
+                if value<mini:
+                    lower = "inf"
+                    upper = mini
+                elif value>maxi:
+                    low = maxi
+                    upper = "inf"
+                else:
+                    lower = value - (value-mini)%step
+                    upper = value + step - (value-mini)%step
+                self.labels[i][binned_key] = "["+str(lower)+"-"+str(upper)+")"
+        except Exception as e:
+            warning("Could not bin labels", e)
+            return False
+        else:
+            say("Successfully binned labels to {}".format(binned_key))
+            return True
