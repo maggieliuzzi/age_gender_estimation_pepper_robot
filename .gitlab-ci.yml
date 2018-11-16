@@ -1,7 +1,5 @@
 image:
   name: "magiclab/ros-keras:latest"
-before_script:
-  - pip install -r requirements.txt
 
 stages:
   - main
@@ -9,11 +7,13 @@ stages:
 main:
   stage: main
   script:
+    - pip install -r requirements.txt
     - 'cd data'
     - '[ -d wiki_crop ] || curl http://blackhole.themagiclab.org/data/gender_detection/wiki_crop.tar | tar x '
     - '[ -d dataset ] && rm -r dataset'
     - 'cd ..'
-    - python scripts/ex_preprocess.py --s="./dataset/wiki_crop/wiki_crop" --d="D:/dev/magic_profiler/data/dataset2"
+    - 'export PYTHONPATH=${PWD}'
+    - 'python scripts/ex_preprocess.py --s="./data/wiki_crop" --d="./data/dataset"'
   artifacts:
     paths:
       - "data/*.csv"
