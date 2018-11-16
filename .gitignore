@@ -8,8 +8,7 @@ __pycache__/
 *.pyc
 
 # Datasets
-dataset/
-wiki_crop/
+data/*
 
 # Outputs
 *.csv
