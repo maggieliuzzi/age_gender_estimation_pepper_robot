@@ -44,10 +44,21 @@ class Model:
         else:
             self.say("Keras model loaded successfully.")
             return True
+    
+    def unfreeze(self, n):
+        for layer in self.base_model.layers[:-n]:
+            layer.trainable = False
+
+    def freeze(self, n):
+        for layer in self.base_model.layers[:-n]:
+            layer.trainable = True
+
 
 def main():
     mm = Model()
     mm.load_base("MobileNetV2")
     print(len(mm.base_model.layers))
+    mm.unfreeze(10)
+    mm.base_model.summary()
 
 timer(main)
