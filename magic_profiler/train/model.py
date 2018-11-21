@@ -85,6 +85,15 @@ class Model:
         else:
             self.say("Successfully saved Keras model.")
             return True
+    
+    def unfreeze(self, n):
+        for layer in self.base_model.layers[:-n]:
+            layer.trainable = False
+
+    def freeze(self, n):
+        for layer in self.base_model.layers[:-n]:
+            layer.trainable = True
+
 
 def main():
     mm = Model(verbose=0)
