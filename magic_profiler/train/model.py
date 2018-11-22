@@ -3,7 +3,6 @@ import os
 
 from magic_profiler.utils import warning, error, timer
 
-
 # Makes numpy's RNG constant for reproducable results
 np.random.seed(1)
 
@@ -70,7 +69,6 @@ class Model:
             self.say("Successfully created the top layer of the Keras model.")
             return True
 
-
     def save(self, filepath):
         '''Saves the keras model to disk'''
         try:
@@ -84,17 +82,9 @@ class Model:
     
     def train(self, dataset_directory, batch_size, val_batch_size, epochs=1):
         input_shape = self.model.layers[0].input_shape[1:-1]
-        output_shape = self.model.layers[-1].output_shape[1:]
         train_trans = ImageDataGenerator(rescale=1./255, rotation_range=36, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
         validate_trans = ImageDataGenerator(rescale=1./255)
         train_generator = train_trans.flow_from_directory(os.path.join(dataset_directory, "train"), target_size=input_shape, batch_size=batch_size, seed=1, class_mode='categorical')
         validate_generator = validate_trans.flow_from_directory(os.path.join(dataset_directory, "validate"), target_size=input_shape, batch_size=val_batch_size, seed=1, class_mode='categorical', shuffle=False)
         self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         self.model.fit_generator(train_generator, epochs=epochs, steps_per_epoch=len(train_generator), verbose=1, validation_data=validate_generator, validation_steps=len(validate_generator))
-
-
-mm = Model(verbose=1)
-mm.load("MobileNetV2", trainable_layers=4)
-mm.add(2)
-mm.train("./data/dataset", 30, 15, 1)
-mm.save("final_model.h5")
