@@ -6,14 +6,43 @@ import magic_profiler.train.model as mpm
 import os
 import scipy.io as sio
 
-# Retrieve path to dataset from the command line
+# TO DO:
+# Check the number of layers to unfreeze for InceptionV3 and NasNetMobile
+# Add checkpointer
+# Dynamically generate the model name?
+# Adapt to other datasets?
+
+'''
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_mn2_up" -fa 2 -sa "up" -mo "mobilenetv2" -re 4 -ba 12 -va 8 -ep 10 -nof
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_mn2_down" -fa 2 -sa "down" -mo "mobilenetv2" -re 4 -ba 12 -va 8 -ep 10 -nof
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_mn2_none" -fa 2 -sa "" -mo "mobilenetv2" -re 4 -ba 12 -va 8 -ep 10 -nof
+
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_iv3_up" -fa 2 -sa "up" -mo "inceptionv3" -re ?? -ba 12 -va 8 -ep 10 -nof
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_iv3_down" -fa 2 -sa "down" -mo "inceptionv3" -re ?? -ba 12 -va 8 -ep 10 -nof
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_iv3_none" -fa 2 -sa "" -mo "inceptionv3" -re ?? -ba 12 -va 8 -ep 10 -nof
+
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_nnm_up" -fa 2 -sa "up" -mo "nasnetmobile" -re ?? -ba 12 -va 8 -ep 10 -nof
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_nnm_down" -fa 2 -sa "down" -mo "nasnetmobile" -re ?? -ba 12 -va 8 -ep 10 -nof
+python scripts\ex_wiki.py -so "..\wiki_crop\wiki_crop" -de ".\data\dataset_nnm_none" -fa 2 -sa "" -mo "nasnetmobile" -re ?? -ba 12 -va 8 -ep 10 -nof
+'''
+
+# Retrieve information from the command line
 parser = argparse.ArgumentParser(description='Preprocesses the WIKI Face Crop dataset for use with Keras')
-parser.add_argument('--source', metavar='PATH', help='Root directory of the dataset', required=True)
-parser.add_argument('--destination', metavar='PATH', help='Desired location of processed images', required=True)
-parser.add_argument('--skip', help='If set, preprocessing is skipped', action='store_true')
+parser.add_argument('-source', metavar='PATH', help='Root directory of the dataset', required=True)
+parser.add_argument('-destination', metavar='PATH', help='Desired location of processed images', required=True)
+parser.add_argument('-facescore', metavar='FLOAT', help='Minimum face score required to use image in training', default=1)
+parser.add_argument('-sampling', metavar='STR', help='Applies resampling to labels, if specified. Can be "up" or "down"', default="")
+parser.add_argument('-model', metavar='STR', help='Which Keras model to use as basis for retraining', default="MobileNetV2")
+parser.add_argument('-pooling', metavar='STR', help='Type of pooling to include at the top of base model. Can be "avg", "max", or "none"', default="avg")
+parser.add_argument('-retrain', metavar='INT', help='Number of layers in model to retrain', default='')
+parser.add_argument('-batchsize', metavar='INT', help='Batch size to use when training networks', default=20)
+parser.add_argument('-valsize', metavar='INT', help='Validation batch size to use when training networks', default=10)
+parser.add_argument('-epochs', metavar='INT', help='Number of epochs to train the networks for', default=1)
+parser.add_argument('-noprocess', help='If set, preprocessing is skipped', action='store_true')
+parser.add_argument('-nofilter', help='If set, preprocessing applies no image filters', action='store_true')
 args = parser.parse_args()
 
-if args.skip == False:
+if args.noprocess == False:
     # Load labels from wiki.mat file into memory
     source = os.path.join(args.source, "wiki.mat")
     mat_file = sio.loadmat(source)['wiki'][0][0]
@@ -30,27 +59,42 @@ if args.skip == False:
     labels = mpl.Labels(mat_labels, verbose=1)
 
     # Filter out unwanted images
-    labels.filter("first_score", lessthan=6)
+    labels.filter("first_score", lessthan=float(args.facescore))
     labels.filter("second_score", greaterthan=0)
     labels.filter("gender", isnotin=[0.0, 1.0])
 
-    # Upsample the labels to even out the genders
-    labels.upsample('gender')
+    # Randomly resample labels if required
+    if args.sampling.lower() == "up":
+        labels.shuffle()
+        labels.upsample('gender')
+    elif args.sampling.lower() == "down":
+        labels.shuffle()
+        labels.downsample('gender')
 
     # Randomly assign images to be for training, validation and test
     labels.shuffle()
     labels.assign()
 
-    # Process the labels by loading, transforming and saving dataset images to the new location
-    labels.process("gender", args.source, "source", args.destination, filter_noise=0.002, filter_contrast=(10,82))
+    # Process the labels by loading, transforming (if desired) and saving dataset images to the new location
+    if args.nofilter == False:
+        labels.process("gender", args.source, "source", args.destination, filter_noise=0.002, filter_contrast=(10,82))
+    else:
+        labels.process("gender", args.source, "source", args.destination)
     csv_destination = os.path.join(args.destination, "labels.csv")
     labels.export_csv(csv_destination)
 
 # Create the machine learning model
-model = mpm.Model()
-model.load(model_uri="MobileNetV2", input_shape=(224, 224, 3), trainable_layers=4, pooling='avg')
+model = mpm.Model(verbose=1)
+if args.retrain=='' or not args.retrain:
+    if args.model.lower()=="mobilenetv2":
+        tl = 4
+    else:
+        tl = 0
+else:
+    tl = int(args.retrain)
+model.load(model_uri=args.model, input_shape=(224, 224, 3), trainable_layers=tl, pooling=args.pooling)
 model.add(2)
 
-# Train the model
-model.train(dataset_directory=args.destination, batch_size=12, val_batch_size=6, epochs=1)
+# Train and save the model
+model.train(dataset_directory=args.destination, batch_size=int(args.batchsize), val_batch_size=int(args.valsize), epochs=int(args.epochs))
 model.save(os.path.join(args.destination,"model.h5"))

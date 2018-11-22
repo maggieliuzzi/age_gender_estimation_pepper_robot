@@ -31,12 +31,13 @@ class Model:
     
     def summary(self):
         if self.verbose>0:
-            self.say("MODEL STRUCTURE ...")
+            self.say("\nMODEL STRUCTURE ...")
             self.model.summary()
 
     def load(self, model_uri="MobileNetV2", input_shape=(224, 224, 3), trainable_layers=0, pooling='avg'):
         '''Loads a new keras model into memory, downloading first if necessary'''
         try:
+            self.say("Loading Keras base model...")
             import ssl
             ssl._create_default_https_context = ssl._create_unverified_context
             if model_uri.lower() == "mobilenetv2":
@@ -63,6 +64,7 @@ class Model:
     def add(self, nodes):
         '''Creates the new top layer for the Keras model'''
         try:
+            self.say("Adding top layer to Keras model...")
             new_model = models.Sequential()
             new_model.add(self.model)
             new_model.add(layers.Dense(nodes, activation='softmax'))
@@ -72,12 +74,13 @@ class Model:
             warning("Could not create top layer of the Keras model", e)
             return False
         else:
-            self.say("Successfully created the top layer of the Keras model.")
+            self.say("Successfully added new top layer of the Keras model.")
             return True
 
     def save(self, filepath):
         '''Saves the keras model to disk'''
         try:
+            self.say("Saving Keras model...")
             self.model.save(filepath)
         except Exception as e:
             warning("Could not save Keras model", e)
