@@ -48,9 +48,9 @@ if args.skip == False:
 
 # Create the machine learning model
 model = mpm.Model()
-model.load(model_uri="MobileNetV2", input_shape=(224, 224, 3), trainable_layers=0, pooling='avg')
+model.load(model_uri="MobileNetV2", input_shape=(224, 224, 3), trainable_layers=4, pooling='avg')
 model.add(2)
 
 # Train the model
-model.train(dataset_directory=args.destination, batch_size=20, val_batch_size=10, epochs=1)
-model.save(args.destination)
+model.train(dataset_directory=args.destination, batch_size=12, val_batch_size=6, epochs=1)
+model.save(os.path.join(args.destination,"model.h5"))

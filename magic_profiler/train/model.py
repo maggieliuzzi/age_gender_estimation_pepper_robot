@@ -42,6 +42,12 @@ class Model:
             if model_uri.lower() == "mobilenetv2":
                 from keras.applications.mobilenetv2 import MobileNetV2
                 self.model = MobileNetV2(weights='imagenet', input_shape=input_shape, include_top=False, pooling=pooling)
+            elif model_uri.lower() == "nasnetmobile":
+                from keras.applications.nasnet import NASNetMobile
+                self.model = NASNetMobile(weights='imagenet', input_shape=input_shape, include_top=False, pooling=pooling)
+            elif model_uri.lower() == "inceptionv3":
+                from keras.applications.inception_v3 import InceptionV3
+                self.model = InceptionV3(weights='imagenet', input_shape=input_shape, include_top=False, pooling=pooling)
             elif os.path.isfile(model_uri):
                 self.model = models.load_model(model_uri)
             for layer in self.model.layers[:-trainable_layers]:
