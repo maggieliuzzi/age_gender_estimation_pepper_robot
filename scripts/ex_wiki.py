@@ -78,7 +78,7 @@ if args.retrain=='' or not args.retrain:
         tl = 32
     elif args.model.lower()=="nasnetmobile":
         tl = 45
-    elif args.model.lower()=="densenet121"
+    elif args.model.lower()=="densenet121":
         tl = 117
     else:
         tl = 0
