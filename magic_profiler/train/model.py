@@ -15,7 +15,7 @@ with open(os.path.join(keras_path, 'keras.json'), 'w') as f:
     f.write(contents)
 
 # Import keras
-from keras import models, layers
+from keras import models, layers, callbacks
 from keras.preprocessing.image import ImageDataGenerator
 
 
@@ -46,6 +46,9 @@ class Model:
             elif model_uri.lower() == "nasnetmobile":
                 from keras.applications.nasnet import NASNetMobile
                 self.model = NASNetMobile(weights='imagenet', input_shape=input_shape, include_top=False, pooling=pooling)
+            elif model_uri.lower() == "densenet121":
+                from keras.applications.densenet import DenseNet121
+                self.model = DenseNet121(weights='imagenet', input_shape=input_shape, include_top=False, pooling=pooling)
             elif model_uri.lower() == "inceptionv3":
                 from keras.applications.inception_v3 import InceptionV3
                 self.model = InceptionV3(weights='imagenet', input_shape=input_shape, include_top=False, pooling=pooling)
@@ -89,11 +92,20 @@ class Model:
             self.say("Successfully saved Keras model.")
             return True
     
-    def train(self, dataset_directory, batch_size, val_batch_size, epochs=1):
-        input_shape = self.model.layers[0].input_shape[1:-1]
-        train_trans = ImageDataGenerator(rescale=1./255, rotation_range=36, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
-        validate_trans = ImageDataGenerator(rescale=1./255)
-        train_generator = train_trans.flow_from_directory(os.path.join(dataset_directory, "train"), target_size=input_shape, batch_size=batch_size, seed=1, class_mode='categorical')
-        validate_generator = validate_trans.flow_from_directory(os.path.join(dataset_directory, "validate"), target_size=input_shape, batch_size=val_batch_size, seed=1, class_mode='categorical', shuffle=False)
-        self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-        self.model.fit_generator(train_generator, epochs=epochs, steps_per_epoch=len(train_generator), verbose=1, validation_data=validate_generator, validation_steps=len(validate_generator))
+    def train(self, dataset_directory, batch_size, val_batch_size, epochs=1, model_base_path="model"):
+        try:
+            self.say("Training Keras model...")
+            input_shape = self.model.layers[0].input_shape[1:-1]
+            train_trans = ImageDataGenerator(rescale=1./255, rotation_range=36, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
+            validate_trans = ImageDataGenerator(rescale=1./255)
+            train_generator = train_trans.flow_from_directory(os.path.join(dataset_directory, "train"), target_size=input_shape, batch_size=batch_size, seed=1, class_mode='categorical')
+            validate_generator = validate_trans.flow_from_directory(os.path.join(dataset_directory, "validate"), target_size=input_shape, batch_size=val_batch_size, seed=1, class_mode='categorical', shuffle=False)
+            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+            checkpointer = callbacks.ModelCheckpoint(model_base_path+".{epoch:02d}.h5", verbose=1)
+            self.model.fit_generator(train_generator, epochs=epochs, steps_per_epoch=len(train_generator), verbose=1, validation_data=validate_generator, validation_steps=len(validate_generator), callbacks=[checkpointer])
+        except Exception as e:
+            warning("Could not train Keras model", e)
+            return False
+        else:
+            self.say("Successfully trained Keras model.")
+            return True

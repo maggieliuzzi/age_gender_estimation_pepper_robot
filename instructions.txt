@@ -1,0 +1,69 @@
+Instructions:
+1. Clone the magic_profiler repo: https://gitlab.com/maggieliuzzi/magic_profiler.git
+2. Checkout into the "train" branch, you should see a "scripts/ex_wiki.py" file
+3. Create a virtual environment in the project's root directory and activate it
+4. Install the dependancies using "pip install -r requirements.txt"
+5. Add the project's root directory to PYTHONPATH
+6. Download or curl the extracted wiki_crop dataset to a known location, if not already done so
+7. Run the following commands, replacing ??????? in the first two with the path to the root directory of wiki_crop (where wiki.mat is located):
+
+[COMPUTER ONE]
+python scripts/ex_wiki.py -so "???????" -de "./data/dataset_filter" -mo "mobilenetv2" -mn "mnv2_filter"
+python scripts/ex_wiki.py -so "???????" -de "./data/dataset_nofilter" -mo "mobilenetv2" -mn "mnv2_nofilter" -nof
+python scripts/ex_wiki.py -so "" -de "./data/dataset_filter" -mo "inceptionv3" -mn "icv3_filter" -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_nofilter" -mo "inceptionv3" -mn "icv3_nofilter" -nof -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_filter" -mo "densenet121" -mn "ds121_filter" -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_nofilter" -mo "densenet121" -mn "ds121_nofilter" -nof -nop
+
+[COMPUTER TWO]
+python scripts/ex_wiki.py -so "???????" -de "./data/dataset_filter_upsample" -sa "up" -mo "mobilenetv2" -mn "mnv2_filter_upsample"
+python scripts/ex_wiki.py -so "???????" -de "./data/dataset_nofilter_upsample" -sa "up" -mo "mobilenetv2" -mn "mnv2_nofilter_upsample" -nof
+python scripts/ex_wiki.py -so "" -de "./data/dataset_filter_upsample" -sa "up" -mo "inceptionv3" -mn "icv3_filter_upsample" -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_nofilter_upsample" -sa "up" -mo "inceptionv3" -mn "icv3_nofilter_upsample" -nof -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_filter_upsample" -sa "up" -mo "densenet121" -mn "ds121_filter_upsample" -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_nofilter_upsample" -sa "up" -mo "densenet121" -mn "ds121_nofilter_upsample" -nof -nop
+
+[COMPUTER THREE]
+python scripts/ex_wiki.py -so "???????" -de "./data/dataset_filter_downsample" -sa "down" -mo "mobilenetv2" -mn "mnv2_filter_downsample"
+python scripts/ex_wiki.py -so "???????" -de "./data/dataset_nofilter_downsample" -sa "down" -mo "mobilenetv2" -mn "mnv2_nofilter_downsample" -nof
+python scripts/ex_wiki.py -so "" -de "./data/dataset_filter_downsample" -sa "down" -mo "inceptionv3" -mn "icv3_filter_downsample" -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_nofilter_downsample" -sa "down" -mo "inceptionv3" -mn "icv3_nofilter_downsample" -nof -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_filter_downsample" -sa "down" -mo "densenet121" -mn "ds121_filter_downsample" -nop
+python scripts/ex_wiki.py -so "" -de "./data/dataset_nofilter_downsample" -sa "down" -mo "densenet121" -mn "ds121_nofilter_downsample" -nof -nop
+
+
+If you want to write your own tests, here is the parameters...
+-source = The root directory of the dataset you're copying images from (generally where wiki.mat is located); required, but ignored if -nop is set
+-destination = The directory where the preprocessed images will be copied to AND where Keras will find them for training; always required
+-facescore = Minimum score required for an image to be 'kept' for training. Default is 2. Almost all images scored 0-7. Non-faces are mainly 0-1
+-sampling = The type of resampling to apply during preprocessing. Can be "" (for none), "up" (for upsampling) or "down" (for downsampling)
+-model = Which Keras model to use as the base model for the network. Currently works with "MobileNetV2", "InceptionV3" and "DenseNet121". "RasNetMobile" is also available, but doesn't work with Theano.
+-pooling = Which type of pooling the top-most layer of the base network uses. Keras supports "avg", "max" or "none". Average is the default
+-retrain = The number of layers of the network to leave unfrozen, allowing them to be retrained. Defualts are 4 for MobileNetV2, 32 for InceptionV3 and 45 for densenet121
+-batchsize = Batch size during training - that is, the number of images to load into memory at a time. Default is 20. Lower this if you get memory errors
+-valsize = Batch size during validation. Default is 10. Lower this if you get memory errors
+-epochs = The number of full runs of the dataset (called an 'epoch') to perform during training. Default is 10
+-mname = The name of the .h5 file that is output. Intermediates at the end of each epoch will be <name>.<epoch>.h5
+-noprocess = A flag; if set, preprocessing is skipped. Use this if you're running a different model on an already preprocessed dataset (as seen in the examples above)
+-nofilter = A flag; if set, preprocessing won't apply the "pepperizer" filter to the images, leaving them in high quality
+-notrain = A flag; if set, Keras will not perform any retraining before saving the model
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       
