@@ -42,8 +42,10 @@ class Labels:
         '''Adds a dictionary to the list of labels'''
         try:
             new_label = dict(label)
-            new_label["_role"] = None
-            new_label["_destination"] = None
+            if "_role" not in new_label:
+                new_label["_role"] = None
+            if "_destination" not in new_label:
+                new_label["_destination"] = None
             self.labels.append(new_label)
         except Exception as e:
             warning("Could not add new label to Labels object", e)

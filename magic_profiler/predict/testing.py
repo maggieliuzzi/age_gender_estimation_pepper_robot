@@ -14,15 +14,18 @@ class Tester:
         self.model = model
     
     def load_labels(self, labels_path):
-        self.labels = mpl.Labels(labels_path)
+        labels = mpl.Labels(labels_path)
+        self.labels = labels.labels
 
     def test_model(self, dataset_path, class_key, destination_key="_destination"):
         results = []
         for label in self.labels:
-            result = self.model.from_file(label[destination_key])[0]
+            print(destination_key)
+            print(label)
+            result = self.model.from_file(label[destination_key])
             print(result)
 
 tester = Tester()
-tester.load_model(".\\data\\mnv2_filter.h5")
-tester.load_labels(".\\data\\dataset_filter\\labels.csv")
-tester.test_model(".\\data\\dataset_filter","gender")
+tester.load_model("./data/datasets/mnv2_filter.h5")
+tester.load_labels("./data/datasets/labels.csv")
+tester.test_model("./data/datasets","gender")
