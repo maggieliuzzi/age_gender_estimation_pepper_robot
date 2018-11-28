@@ -1,5 +1,6 @@
 import magic_profiler.predict.predict as mpp
 import magic_profiler.preprocess.labels as mpl
+import os
 
 class Tester:
     def __init__(self):
@@ -20,9 +21,7 @@ class Tester:
     def test_model(self, dataset_path, class_key, destination_key="_destination"):
         results = []
         for label in self.labels:
-            print(destination_key)
-            print(label)
-            result = self.model.from_file(label[destination_key])
+            result = self.model.from_file(os.path.join(dataset_path, label[destination_key]))
             print(result)
 
 tester = Tester()
