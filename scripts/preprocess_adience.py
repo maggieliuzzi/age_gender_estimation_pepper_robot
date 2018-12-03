@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 # Load labels from wiki.mat file into memory
 source = os.path.join(args.source, "ready_data.csv") # Change for binned_data.csv
-for line in source:
+adience_lables = [[
     image_folder = line[0]
     original_image = line[1]
     face_id = line[2]
@@ -21,6 +21,8 @@ for line in source:
     age = line[3]
     gender = line[4]
     binned_age = line[12] # In binned_data.csv only
+    ] for line in source]
+
 '''
 mat_file = sio.loadmat(source)['wiki'][0][0]
 mat_labels = [{
